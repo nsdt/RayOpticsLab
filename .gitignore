@@ -1,0 +1,12 @@
+# Local archives and generated outputs are never part of the repository.
+/node_modules/
+/dev/
+/review*/
+/dist/
+/test-results/
+/data/
+__pycache__/
+*.pyc
+*.log
+.DS_Store
+Thumbs.db

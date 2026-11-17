@@ -1,0 +1,14 @@
+* text=auto eol=lf
+*.bat text eol=crlf
+*.png binary
+*.zip binary
+# These archived/provenance bytes are hash verified at runtime.
+app/paper/engine/** -text
+app/paper/experiments.json -text
+app/paper/provenance.json -text
+app/paper/protocol.js -text
+app/paper/selection.js -text
+app/paper/worker.js -text
+app/gpu-support.js -text
+app/gpu-transport.js -text
+app/*.wgsl -text

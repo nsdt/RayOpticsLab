@@ -1,0 +1,24 @@
+{
+  "private": true,
+  "type": "commonjs",
+  "devDependencies": {
+    "playwright": "1.62.1",
+    "prettier": "3.6.2"
+  },
+  "scripts": {
+    "start": "python launch.py",
+    "test": "node scripts/check.cjs",
+    "test:browser": "node scripts/check-browser.cjs",
+    "check:distribution": "node scripts/check-distribution.cjs",
+    "build": "node scripts/build-site.cjs",
+    "package:local": "python scripts/package-local.py",
+    "format": "prettier --write \"app/*.js\" \"app/*.css\" \"app/*.html\" \"app/paper/*.js\" \"scripts/*.cjs\" \"tests/**/*.cjs\"",
+    "format:check": "prettier --check \"app/*.js\" \"app/*.css\" \"app/*.html\" \"app/paper/*.js\" \"scripts/*.cjs\" \"tests/**/*.cjs\"",
+    "paper:hashes": "node scripts/refresh-provenance.cjs"
+  },
+  "name": "ray-optics-lab",
+  "description": "Browser visualization of ray propagation through inhomogeneous optical media",
+  "engines": {
+    "node": ">=22"
+  }
+}

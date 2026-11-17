@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Ray Optics Lab — 光学媒質を通した像の可視化</title>
+    <link rel="stylesheet" href="app.css?v=20261117-distribution1" />
+    <link rel="stylesheet" href="workspace-ui.css?v=20261117-distribution1" />
+    <link rel="stylesheet" href="paper-ui.css?v=20261117-distribution1" />
+    <script src="locales/en.js?v=20261117-distribution1"></script>
+    <script src="i18n.js?v=20261117-distribution1"></script>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <h1>Ray Optics Lab</h1>
+        <p>光学媒質を通して観察される像の可視化</p>
+      </div>
+      <small class="scope-line">等方性・異方性 × 均一・不均一</small>
+      <label class="language-control" data-own-i18n
+        >Language / 言語
+        <select id="interfaceLanguage" aria-label="Interface language / 表示言語">
+          <option value="en">English</option>
+          <option value="ja">日本語</option>
+        </select></label
+      >
+    </header>
+    <main>
+      <aside>
+        <p class="hint">
+          <a href="./?v=20261117-distribution1">標準画面を開く（光軸・水平角・仰角0°）</a>
+        </p>
+        <details class="example-box" id="examplePresets">
+          <summary>比較用デモを明示的に選ぶ</summary>
+          <p class="hint">
+            比較用に材料・形状・配向・視点を切り替えます。デモによっては角度が通常の0°から変わります。現在の設定は置き換わります。
+          </p>
+          <button id="finitePhaseDemo">有限形状：球・立方体・トーラスの位相輸送</button>
+          <button id="phaseComparisonDemo">界面の相関：画像と数値の比較（斜入射）</button>
+          <button id="phaseCommonDemo">Common-scale：斜入射の位相輸送</button>
+          <button id="phaseHelicalDemo">Heliconical：斜入射の位相輸送</button>
+          <button id="phaseAxialDemo">2013 axial：斜入射の位相輸送</button>
+          <button id="coherentDemo">Heliconical：位相を含む偏光輸送（平行平板・傾き60°）</button>
+          <button id="coherentSplitDemo">光束の空間分離も含む例（厚さ2 mm）</button>
+          <button id="modalDemo">Heliconical：解析軌道＋分配近似（傾き60°）</button>
+          <button id="layerDemo">比較用：均質層へ置換（直線・傾き60°）</button>
+          <button id="grinDemo">Radial gradient：偏光・反射透過（正面0°）</button>
+          <button id="axialBranchDemo">2013 axial：o/e・内部1:1（軸z固定・正面）</button>
+          <button id="biaxDemo">KTP：二軸（第3主軸35°・正面）</button>
+          <button id="polarDemo">Calcite：二重像（光軸35°・正面）</button>
+          <button id="commonComparisonDemo">Common-scale：均質比較（光軸35°・水平12°）</button>
+          <button id="commonDemo">Common-scale：断熱近似（光軸35°・正面）</button>
+          <button id="helicalDemo">Heliconical：断熱近似（傾き35°・正面）</button>
+          <button id="branchDemo">Heliconical：内部1:1分岐（傾き35°・正面）</button>
+          <p class="hint">
+            アプリ用の例です。論文の図と同一の数値条件ではありません。読み込んだ後に「レンダリング」を押してください。
+          </p>
+        </details>
+        <details class="settings-group" open id="materialSettings">
+          <summary>1. 形状と材料</summary>
+          <div class="group-body">
+            <label
+              >基本形状<select id="shape">
+                <option value="sphere">球</option>
+                <option value="asphere">非球面レンズ（平面＋双曲面）</option>
+                <option value="cube">立方体</option>
+                <option value="torus">トーラス</option>
+                <option value="slab">平行平板（側面なし）</option>
+              </select></label
+            ><label>材料プリセット<select id="preset"></select></label>
+            <p class="hint" id="presetNote"></p>
+            <p class="hint" id="presetSource"></p>
+            <button id="customize" type="button">この設定を任意指定として編集</button
+            ><label>材料タイプ<select id="materialType"></select></label
+            ><label>材料モデル<select id="material"></select></label>
+            <div class="solution-card">
+              <strong id="solutionForm"></strong>
+              <p id="solutionNote" class="hint"></p>
+            </div>
+            <div id="materialRealizations" hidden>
+              <p class="hint">
+                明るさも計算するには、誘電率・透磁率を定めた次の別モデルを選べます。追加する仮定は、切替後の材料説明に表示します。
+              </p>
+              <button id="engRealization" type="button" hidden>
+                磁気異方性を加えた実現へ（別の構成式）</button
+              ><button id="moldedRealization" type="button" hidden>
+                変換媒質としての実現へ（ε＝μの仮定）</button
+              ><button id="axialRealization" type="button" hidden>
+                一軸媒質としての実現へ（o/e対応）
+              </button>
+            </div>
+            <h3>材料パラメータ</h3>
+            <div id="params"></div>
+            <section id="orientationSection" hidden>
+              <h3>軸の向き</h3>
+              <p class="hint" id="orientationNote"></p>
+              <div id="orientation"></div>
+            </section>
+            <h3>媒質外パラメータ</h3>
+            <p class="hint">カメラから物体・背景までの外部を、等方的で均一な媒質として扱います。</p>
+            <div id="outside"></div>
+          </div>
+        </details>
+
+        <details class="settings-group" open id="raySettings">
+          <summary>4. 偏光と光線の分岐</summary>
+          <div class="group-body">
+            <label
+              >画像の計算方法<select id="transport" aria-describedby="transportGuide transportNote">
+                <option value="polarized">反射・屈折と明るさを計算（通常）</option>
+                <option value="legacy">透過する像の位置を比較（簡易）</option>
+              </select></label
+            >
+            <p class="hint" id="transportGuide">
+              明るさや二重像の見え方を調べるときは「通常」、透過した像の位置だけを比べるときは「簡易」を選びます。
+            </p>
+            <p class="hint" id="transportNote"></p>
+            <p class="hint" id="modeDefinition" hidden></p>
+            <div id="physicalTransport" hidden>
+              <div class="solution-card" id="lightSourceNote">
+                <strong>光源の仮定：自然光を無偏光で近似</strong>
+                <p>
+                  偏光は、光の電場の振動方向に関する性質です。ここでは特定の偏光に偏らない光（無偏光）が入ると仮定します。反射・屈折後の偏光の変化も計算します。
+                </p>
+              </div>
+              <h3>物体の表面：反射・屈折</h3>
+              <p class="hint">
+                表面に光が到達するたびに、反射する光と内部・外部へ屈折する光の向きと強さを計算します。物体の中から表面へ戻った光も対象です。
+              </p>
+              <label
+                >表示する光<select id="transportView">
+                  <option value="all">すべての光を合成（通常）</option>
+                </select></label
+              >
+              <p class="hint" id="contributionNote"></p>
+              <p class="hint" id="biaxialNote" hidden>
+                二軸媒質では、二つの固有偏光に対応する光線を「光線1」「光線2」と呼びます。表面でそれぞれの方向と強さを計算します。光学軸付近の縮退・円錐屈折は対象外です。
+              </p>
+              <details class="reference" id="transportLimits">
+                <summary>追跡を終了する条件</summary>
+                <p class="hint">
+                  各画素で、残っている光線のうち重みの大きいものから計算します。入射光の重みは1です。
+                </p>
+                <div class="row">
+                  <label
+                    >省略する光の合計目安（%／画素）<input
+                      id="untracedTolerance"
+                      type="number"
+                      min="0"
+                      max="10"
+                      step="0.01"
+                      value="0.1" /></label
+                  ><label
+                    >光線を処理する回数上限（／画素）<input
+                      id="maxRayWork"
+                      type="number"
+                      min="1"
+                      max="131072"
+                      step="1"
+                      value="2048"
+                  /></label>
+                </div>
+                <p class="hint">
+                  省略済みの重みと待ち行列の重みの合計が許容量以下になると終了します。計算失敗・非伝播の重みも合計に含めます。0%ではこの早期終了を使いません。1処理は、待ち行列から光線・光束を1つ取り出して区間や界面などを評価する操作です。
+                </p>
+                <div class="row">
+                  <label
+                    >表面で反射・屈折を計算する回数上限<input
+                      id="maxInterfaces"
+                      type="number"
+                      min="2"
+                      max="64"
+                      step="1"
+                      value="6" /></label
+                  ><label
+                    >省略する光線の最小重み<input
+                      id="minContribution"
+                      type="number"
+                      min="0.000001"
+                      max="0.05"
+                      step="0.0001"
+                      value="0.0001"
+                  /></label>
+                </div>
+                <p class="hint">
+                  処理数・表面回数・内部分岐回数の上限や微小光の省略により、許容量を超えて終了する場合があります。閾値は個々の枝に適用する値で、合計の上限ではありません。打ち切った重みは他の光に配分せず、結果に理由別で表示します。この許容量は追跡の省略量であり、光学モデル全体の誤差ではありません。
+                </p>
+              </details>
+            </div>
+            <h3 id="entryHeading">比較する透過光線</h3>
+            <label
+              ><span id="entryLabel">入口から追跡する光線</span
+              ><select id="mode"></select
+            ></label>
+            <p class="hint" id="entryNote"></p>
+            <div class="substep" id="branchSection">
+              <h3>物体の内部：光線の伝わり方</h3>
+              <p class="hint" id="branchNote"></p>
+              <p class="hint" id="adiabaticNote" hidden></p>
+              <details class="reference" id="branchExperiment" hidden>
+                <summary>内部分岐：モデルと区間の設定</summary>
+                <p class="hint">
+                  軌道の解と、光の分配を求める近似を別々に選びます。位相を含むモデルでは、任意のz面で偏光の相関を捨てず、光束の重なりから分離を判断します。
+                </p>
+                <div id="branchControls">
+                  <label
+                    >内部の分配モデル<select id="branchModel">
+                      <option value="coherent">解析軌道＋位相を含む連続輸送</option>
+                      <option value="modal">解析軌道＋モード分配（位相差省略）</option>
+                      <option value="equal">解析軌道＋各50%（比較）</option>
+                      <option value="layers">比較用：均質層へ置換（直線）</option>
+                    </select></label
+                  ><label id="branchPolicyLabel"
+                    >分配を評価する位置<select id="branchPolicy">
+                      <option value="overlap" hidden>光束の重なりから分離を判断</option>
+                      <option value="off">区切らない（元の連続媒質を追跡）</option>
+                      <option value="planes">z座標を一つずつ指定する</option>
+                      <option value="distributed">z方向の区間に等間隔で配置する</option>
+                    </select></label
+                  >
+                  <div id="branchActive">
+                    <p class="hint" id="branchModelNote"></p>
+                    <div id="coherentFields" hidden>
+                      <label
+                        >表面での偏光の扱い<select id="coherentInterface">
+                          <option value="finite-resolved">
+                            有限形状：局所表面で光線を分ける近似
+                          </option>
+                          <option value="coupled">相関を保持（4媒質・重なり十分）</option>
+                          <option value="coupled-dephased">比較：同じ共通光束で相関を除去</option>
+                          <option value="resolved">光線を分ける近似（4媒質・斜入射対応）</option>
+                          <option value="retained">相関を保持（正面Heliconical専用）</option>
+                        </select></label
+                      >
+                      <p class="hint" id="coherentInterfaceNote"></p>
+                      <label id="commonMinOverlapLabel"
+                        >共通光束として扱う最小重なり<input
+                          id="commonMinOverlap"
+                          type="number"
+                          min="0.9"
+                          max="0.999999"
+                          step="0.001"
+                      /></label>
+                      <p class="hint" id="commonCarrierNote" hidden>
+                        二本の解析軌道の中点を共通光束の代表位置とします。重なりの条件を外れる光線は条件外として表示します。閾値はモデル条件で、精度保証ではありません。異なる往復経路間の干渉は計算しません。
+                      </p>
+                      <div class="row">
+                        <label
+                          >真空波長（nm）<input
+                            id="wavelengthNm"
+                            type="number"
+                            min="100"
+                            max="10000"
+                            step="1" /></label
+                        ><label
+                          >座標1単位の長さ（μm）<input
+                            id="lengthUnitUm"
+                            type="number"
+                            min="0.1"
+                            max="10000"
+                            step="0.1"
+                        /></label>
+                      </div>
+                      <p class="hint">
+                        平板は
+                        z=−1〜＋1、立方体は各座標−1〜＋1、球は半径1です。トーラスはy軸まわりで主半径0.72・管半径0.29です。屈折率は波長に対して固定し、偏光の位相差だけに波長を使います。
+                      </p>
+                      <label
+                        >光束半径 w（z一定面内、μm）<input
+                          id="beamRadiusUm"
+                          type="number"
+                          min="0.01"
+                          max="100000"
+                          step="0.1"
+                      /></label>
+                      <p class="hint">
+                        強度が中心の1/e²になる半径です。二つの解析軌道の距離から光束の重なりを見積もり、十分離れた時点で独立した光線に分けます。回折による広がりは計算しません。
+                      </p>
+                      <details class="reference">
+                        <summary>光束分離の仮定と数値検証</summary>
+                        <label
+                          >独立とみなす場の重なり<input
+                            id="overlapCutoff"
+                            type="number"
+                            min="0.000001"
+                            max="0.1"
+                            step="0.001"
+                        /></label>
+                        <p class="hint">
+                          小さくするほど、より離れるまで偏光の相関を保持します。結果に影響する近似パラメータです。
+                        </p>
+                        <label
+                          >偏光積分の許容誤差（数値誤差の目安）<input
+                            id="phaseTolerance"
+                            type="number"
+                            min="0.00000001"
+                            max="0.001"
+                            step="0.000001" /></label
+                        ><label
+                          >偏光計算の初期分割数（1〜256）<input
+                            id="phaseSlices"
+                            type="number"
+                            min="1"
+                            max="256"
+                            step="1"
+                        /></label>
+                        <p class="hint">
+                          数値検証用です。必要に応じてさらに細分化し、偏光の相関を保持して積分します。許容誤差を小さくした場合や分割数を変えた場合の収束を確認できます。これらは物理的な分岐頻度ではなく、誤差の目安はモデル自体の物理誤差を保証しません。
+                        </p>
+                      </details>
+                      <p class="hint" id="coherentMetrics"></p>
+                      <p class="hint">
+                        対象はheliconical・2種のcommon-scale・2013
+                        axialの一軸実現です。平行平板・立方体・球・トーラス、斜入射・透視投影に対応します。有限形状を選ぶと、界面では局所法線ごとに独立光線へ分ける方式になります。光束の一方が表面に達した後の区間、およびz折り返し等では、単独モードの断熱近似を使います。光束の重なりを保つ区間では二本の軌道を共通の光束で近似し、区間中の変換位置は解像しません。
+                      </p>
+                    </div>
+                    <label id="branchPlanesLabel"
+                      >評価面のz座標（カンマ区切り）<input
+                        id="branchPlanes"
+                        type="text"
+                        value="-0.5, 0, 0.5"
+                        aria-describedby="planesHelp"
+                    /></label>
+                    <p class="hint" id="planesHelp">
+                      例：−0.5, 0, 0.5 →
+                      3面。座標系は画面の視点によらず固定です。面数の設定は使いません。
+                    </p>
+                    <div id="distributedFields">
+                      <div class="row">
+                        <label
+                          >区間の開始z<input
+                            id="branchStart"
+                            type="number"
+                            step="0.1"
+                            value="-0.8" /></label
+                        ><label
+                          >区間の終了z<input id="branchEnd" type="number" step="0.1" value="0.8"
+                        /></label>
+                      </div>
+                      <label
+                        >区間内に置く評価面の数<input
+                          id="branchCount"
+                          type="number"
+                          min="1"
+                          max="32"
+                          value="5"
+                      /></label>
+                      <p class="hint">
+                        両端を除く区間内に配置します。間隔は「区間長 ÷
+                        (面数＋1)」。個別指定のz座標は使いません。
+                      </p>
+                    </div>
+                    <p id="branchPreview"></p>
+                    <label
+                      >内部分岐の回数上限（／経路）<input
+                        id="branchDepth"
+                        type="number"
+                        min="0"
+                        max="6"
+                        step="1"
+                        value="2"
+                    /></label>
+                    <p class="hint" id="depthNote"></p>
+                    <p class="hint" id="branchWeightNote"></p>
+                    <details class="reference">
+                      <summary>分岐の計算条件</summary>
+                      <p class="hint" id="branchConditions"></p>
+                    </details>
+                  </div>
+                </div>
+              </details>
+            </div>
+          </div>
+        </details>
+        <details class="settings-group" id="observationSettings">
+          <summary>2. 視点と背景</summary>
+          <div class="group-body">
+            <label
+              >観察する側<select id="cameraSide">
+                <option value="positive">z正側から</option>
+                <option value="negative">z負側から</option>
+              </select></label
+            >
+            <p class="hint" id="cameraSideNote"></p>
+            <label
+              >投影<select id="projection">
+                <option value="perspective">透視投影</option>
+                <option value="ortho">平行投影</option>
+              </select></label
+            >
+            <div id="camera"></div>
+            <label
+              >背景<select id="background">
+                <option value="grid">濃いグレーと象限色のチェック模様</option>
+                <option value="uv">連続座標パターン</option>
+                <option value="markers">黒地の白い十字（像位置・輝度の比較）</option>
+                <option value="white">全方向の一様白（エネルギー検証）</option>
+              </select></label
+            >
+          </div>
+        </details>
+        <details class="settings-group" id="computationSettings">
+          <summary>5. 計算と画質</summary>
+          <div class="group-body">
+            <label
+              >計算装置<select id="computeBackend">
+                <option value="cpu">CPU：倍精度の基準計算</option>
+                <option value="gpu">GPUを優先：対応条件はWebGPU、その他はCPU</option>
+              </select></label
+            >
+            <p id="gpuSupportNote" class="hint"></p>
+            <p class="hint">
+              対応する形状・媒質・計算精度ではGPUを使用します。不均一異方性媒質を含め、前面が平面、後面が非球面で構成されたレンズに対応します。GPUで精度を確保できない画素はCPUで計算します。論文タブでは検証済みの単精度設定を使用でき、元のCPU設定と実際のGPU設定を結果に記録します。
+            </p>
+            <button id="gpuCalciteDemo" type="button">GPU例：Calcite・立方体（光軸35°）</button>
+            <button id="gpuSphereDemo" type="button">GPU例：Calcite・球（光軸0°）</button>
+            <button id="gpuTorusDemo" type="button">
+              GPU例：Calcite・トーラス（光軸0°・仰角30°）
+            </button>
+            <button id="gpuGrinDemo" type="button">GPU例：Radial gradient・球（正面0°）</button>
+            <button id="gpuBiaxialDemo" type="button">GPU例：KTP・立方体（主軸0°）</button>
+            <button id="gpuNumericalDemo" type="button">
+              GPU例：数値軌道・位相輸送（光軸35°・水平12°）
+            </button>
+            <button id="gpuRKDemo" type="button">GPU例：RKF45・2013 axialの球（正面0°）</button>
+            <button id="gpuPhaseDemo" type="button">GPU例：位相を含む内部偏光（光軸35°）</button>
+            <button id="gpuModalDemo" type="button">
+              GPU例：位相を省略するモード分配（光軸35°）
+            </button>
+            <button id="gpuAnisotropicDemo" type="button">
+              GPU例：Quadratic scale・球（光軸0°）
+            </button>
+            <button id="gpuShearDemo" type="button">GPU例：Coordinate-shear・球（正面0°）</button>
+            <button id="gpuCommonDemo" type="button">
+              GPU例：Common-scale（光軸35°・水平12°）
+            </button>
+            <p class="hint"><a href="#gpuComparisonSection">CPUとGPUの画像・数値を比較 ↓</a></p>
+            <label
+              >軌道の計算法<select id="solver">
+                <option value="auto">自動：閉形式 → 数値求積 → ODE積分</option>
+                <option value="schur">積分表示の数値求積を優先（Schur）</option>
+                <option value="rkf45">ODE数値積分：RKF45（均質媒質は直線）</option>
+              </select></label
+            >
+            <div id="odeControls">
+              <label
+                >ODEの精度<select id="odePrecision">
+                  <option value="standard">標準</option>
+                  <option value="high">高精度（CPU）</option>
+                  <option value="custom">任意指定</option>
+                </select></label
+              >
+              <details>
+                <summary>ODEの許容誤差</summary>
+                <label
+                  >相対許容誤差<input
+                    id="odeRtol"
+                    type="number"
+                    min="1e-12"
+                    max="0.01"
+                    step="any"
+                    value="1e-6" /></label
+                ><label
+                  >位置の絶対許容誤差（座標単位）<input
+                    id="odeAtolPosition"
+                    type="number"
+                    min="1e-12"
+                    max="0.01"
+                    step="any"
+                    value="1e-7" /></label
+                ><label
+                  >波数の絶対許容誤差（無次元）<input
+                    id="odeAtolMomentum"
+                    type="number"
+                    min="1e-12"
+                    max="0.01"
+                    step="any"
+                    value="1e-7"
+                /></label>
+              </details>
+              <p class="hint">
+                ODE軌跡はRKF45で局所誤差を推定し、必要な区間だけ内部の刻みを細かくします。最大刻みは形状探索・偏光輸送にも使います。閉式・Schur求積・偏光積分の精度設定とは別です。許容誤差は画像全体の誤差保証ではありません。高精度は同じ許容誤差を保ってCPUで計算します。
+              </p>
+            </div>
+            <p class="hint" id="layerSolverNote" hidden>
+              層近似では各層の光線は直線です。下の軌道ソルバーと追跡の刻み幅は使いません。層の厚さは「内部の区切り方」で指定します。
+            </p>
+            <div class="row">
+              <label
+                >画像の一辺 <output id="resolutionValue" for="resolution">128 × 128 px</output
+                ><input
+                  id="resolution"
+                  type="range"
+                  min="4"
+                  max="1024"
+                  step="1"
+                  value="128" /></label
+              ><label
+                >軌道を確認する最大間隔<input
+                  id="step"
+                  type="number"
+                  min="0.005"
+                  max="0.1"
+                  step="0.005"
+                  value="0.035"
+              /></label>
+            </div>
+            <p class="hint">
+              分岐面数・深さ・画像サイズを増やすほど計算が重くなります。画像の一辺は4〜1024画素で指定できます。
+            </p>
+          </div>
+        </details>
+      </aside>
+      <article>
+        <div class="toolbar">
+          <button class="primary" id="render">レンダリング</button><button id="cancel">停止</button
+          ><button id="reset">標準設定へ戻す（角度0°）</button><button id="png">PNG保存</button
+          ><button id="json">設定保存</button
+          ><input type="file" id="load" accept="application/json" hidden /><button id="import">
+            設定読込</button
+          ><progress id="progress" max="1" value="0" aria-label="計算の進捗"></progress>
+        </div>
+        <p class="hint" id="exampleNotice" hidden></p>
+        <p id="phaseCompareJump" hidden>
+          <a href="#phaseComparisonSection">画像と数値の比較へ ↓</a>
+        </p>
+        <div class="path-summary" aria-live="polite">
+          <p><strong>現在の設定</strong> <span id="sceneSummary"></span></p>
+          <p id="angleSummary"></p>
+          <p id="pathSummary"></p>
+        </div>
+        <div class="quadrant-legend" aria-label="背景の象限色">
+          <span style="--q: #e6f0fa">I：x＋ y＋</span><span style="--q: #fae7ec">II：x− y＋</span
+          ><span style="--q: #efe8fa">III：x− y−</span><span style="--q: #faf4e0">IV：x＋ y−</span>
+        </div>
+        <p class="hint">背景は濃いグレーと各象限の淡色によるチェック模様。</p>
+        <p class="hint" id="coordinateNote"></p>
+        <div class="viewport">
+          <canvas
+            id="view"
+            width="128"
+            height="128"
+            aria-label="媒質を通して見た背景のレンダリング"
+          ></canvas>
+        </div>
+        <p id="renderWarning" class="render-warning" role="status" hidden></p>
+        <p id="status" role="status">準備中</p>
+        <p id="traceStats" class="hint"></p>
+        <section id="budgetPanel" hidden aria-label="追跡と打切りの結果">
+          <p id="budgetStats" role="status"></p>
+          <p id="budgetBreakdown" class="hint"></p>
+        </section>
+        <p id="methodStats" class="hint" role="status"></p>
+        <small id="backend"></small>
+        <p id="gpuRuntime" class="hint" hidden></p>
+        <section id="gpuComparisonSection">
+          <h3>CPUとWebGPUの比較</h3>
+          <p id="gpuCompareHint" class="hint"></p>
+          <div class="comparison-actions">
+            <label
+              >比較画像の一辺<select id="gpuCompareResolution">
+                <option value="64">64 px</option>
+                <option value="128">128 px</option>
+                <option value="256">256 px</option>
+              </select></label
+            ><button id="gpuCompareStart">CPU／GPUの比較を実行</button
+            ><button id="gpuCompareCancel" disabled>比較を停止</button
+            ><button id="gpuCompareSave" disabled>比較記録を保存</button>
+          </div>
+          <p id="gpuCompareStatus" role="status"></p>
+          <p id="gpuCompareConditions" class="hint"></p>
+          <p class="hint">
+            未追跡量の平均は背景を含む全画素に対する値です。CPUとの差は実装間の一致を調べる値で、光学モデルの精度や画像の収束とは別に評価します。
+          </p>
+          <p id="gpuCompareStale" class="phase-warning" hidden>
+            設定が変わっています。比較開始時の条件を表示しています。
+          </p>
+          <div class="phase-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>計算</th>
+                  <th>総時間</th>
+                  <th>GPU準備</th>
+                  <th>準備後の処理</th>
+                  <th>平均未追跡</th>
+                  <th>最大未追跡</th>
+                  <th>最大収支誤差</th>
+                  <th>条件外画素</th>
+                  <th>GPU画素</th>
+                  <th>CPU画素</th>
+                </tr>
+              </thead>
+              <tbody id="gpuCompareTableBody"></tbody>
+            </table>
+          </div>
+          <p id="gpuDifference" class="hint"></p>
+          <div id="gpuCompareImages" class="comparison-grid"></div>
+        </section>
+        <section id="phaseComparisonSection" hidden>
+          <h3>画像と数値の比較</h3>
+          <p id="phaseCompareHint" class="hint"></p>
+          <div class="row">
+            <label
+              >比較内容<select id="phaseCompareKind">
+                <option value="shapes">形状の比較（立方体・球・トーラス）</option>
+                <option value="interfaces">表面で偏光の相関を保つ／除く（3条件）</option>
+                <option value="accuracy">軌道と偏光の数値精度（3条件）</option>
+                <option value="width">光束幅への感度（半分・現在・2倍）</option>
+                <option value="threshold">分離閾値への感度（1/10・現在・10倍）</option>
+              </select></label
+            ><label
+              >比較画像の一辺<select id="phaseCompareResolution">
+                <option value="64">64 px</option>
+                <option value="128">128 px</option>
+              </select></label
+            >
+          </div>
+          <div class="comparison-actions">
+            <button id="phaseCompareStart" class="primary">比較を実行</button
+            ><button id="phaseCompareCancel" disabled>比較を停止</button
+            ><button id="phaseCompareSave" disabled>画像と数値の記録を保存</button>
+          </div>
+          <p id="phaseCompareStatus" role="status"></p>
+          <p id="phaseCompareStale" class="phase-warning" hidden>
+            設定が変わっています。下の比較結果は「比較開始時の条件」です。再計算すると更新されます。
+          </p>
+          <p id="phaseCompareConditions" class="hint"></p>
+          <p id="phaseCompareScope" class="hint"></p>
+          <p class="hint" id="phasePowerNote">
+            T・Rは背景の色によらない流束比、画像は背景の色を各経路の強度で合成したものです。T＋入口反射R＋未追跡＋失敗寄与の収支を確認します。相関保持と相関除去の差はモデル間の差で、波動画像の誤差ではありません。透視投影は平行投影より時間がかかります。
+          </p>
+          <div class="phase-table-wrap">
+            <table id="phaseCompareTable">
+              <thead>
+                <tr>
+                  <th>条件</th>
+                  <th id="phasePowerA">一回透過T</th>
+                  <th id="phasePowerB">入口反射R</th>
+                  <th>未追跡</th>
+                  <th>最大収支誤差</th>
+                  <th>計算時間</th>
+                  <th>Aとの差 RMSE</th>
+                  <th>条件外画素</th>
+                </tr>
+              </thead>
+              <tbody id="phaseCompareTableBody"></tbody>
+            </table>
+          </div>
+          <div id="phaseCompareImages" class="comparison-grid"></div>
+        </section>
+        <section id="comparisonSection" hidden>
+          <h3>Common-scale：像と計算法の比較</h3>
+          <p id="comparisonHint" class="hint"></p>
+          <div class="comparison-actions">
+            <button id="compareGradients">勾配を比較（4条件）</button
+            ><button id="compareSolvers">計算法を比較（4条件）</button
+            ><button id="comparisonCancel" disabled>比較を停止</button
+            ><button id="comparisonSave" disabled>比較記録を保存</button>
+          </div>
+          <p id="comparisonStatus" role="status"></p>
+          <p id="comparisonConditions" class="hint"></p>
+          <p id="comparisonScope" class="hint"></p>
+          <p class="hint">
+            区間内では同じ種類の光線を追跡し、表面で反射・屈折を計算します。内部分岐を追加した場合、選んだ分配近似も比較条件に含めます。画像間で露光・配色は共通です。光線ごとの明るさは「表示する光」を切り替えて比較できます。打切り最大値にも注意してください。小さな界面収支誤差は、断熱近似や画像全体の誤差保証ではありません。
+          </p>
+          <div id="comparisonImages" class="comparison-grid"></div>
+        </section>
+        <details class="reference">
+          <summary>選択中の材料モデル</summary>
+          <p id="note"></p>
+        </details>
+        <details class="reference">
+          <summary>画像の意味と適用範囲</summary>
+          <p>
+            「反射・屈折と明るさを計算」は、材料に設定された誘電率・透磁率と偏光から、表面の反射・透過率を計算します。光源は無偏光とし、異なる経路の強度を線形RGBで加えます。等方性不均一媒質では、二偏光が同じ曲線を進み、その曲線に沿って偏光を数値輸送します。異方性不均一媒質の連続モデルでは、断熱近似による固有偏光の追跡、または対応する座標変換による偏光の輸送を使います。新しい「位相を含む連続輸送」は、4種の正定値・z依存一軸媒質で、相対位相と媒質内部の偏光の相関を保持します。一般の斜入射では、十分重なる共通光束の界面相関保持と、従来の独立光線方式を選べます。共通光束では二本の軌道の中点を代表位置とする追加近似を使います。平行平板では正面heliconical専用の従来モデルも選べます。有限形状では実際の表面の位置・法線で独立した光線へ分けます。z方向の折り返し等は位相モデルの範囲外として、単独モードの断熱近似を表示付きで使います。各モードの軌道には閉形式解・積分表示・ODEを使い、光束の分離は有限幅の光束を仮定した近似です。後方への連続結合や波束の広がりは含みません。従来の「解析軌道＋モード分配」は元の連続軌道を保ち、前方2モードの基底の変化から区間の分配を近似します。複屈折の位相差と内部の後方結合を省き、分配を評価面へ集約する研究用モデルです。旧比較として、局所物性を各層で一定とする非干渉の層近似も選べます。これは有限の層ごとに位相関係を失う仮定であり、滑らかな媒質の連続的なモード結合を解くものではありません。適用条件は選択した材料の説明に表示します。
+          </p>
+          <p>
+            「透過する像の位置を比較」は、選んだ光線を通して見える背景の位置を調べる簡易計算です。反射光や偏光に応じた明るさの変化は計算しません。二種類を同時に表示するときは等しい重みで合成します。全反射は濃紺、選択した光線が伝播できない場合は紫、追跡上限は黄、計算条件外は赤で表示します。
+          </p>
+          <p>
+            均質媒質の内部では光線はそれぞれ直進し、新しい分岐を加えません。不均一な二モード媒質には、元の解析軌道にモード分配の近似を追加できます。従来の位相差省略モデルは、実媒質の定量的な変換率の予測とは区別します。位相を含む新モデルの対応範囲と光束分離の仮定は、専用の設定欄に表示します。比較用の各0.5分岐と旧層近似も残しています。面が物体の外にある場合は分岐しません。
+          </p>
+          <p>
+            単色モードのRGBは背景の配色です。スペクトルモードでは、波長ごとの屈折率と偏光輸送からD65光源下の色を積分します。吸収、別経路間の画像干渉、回折、非線形応答は扱いません。位相を含むモデルは偏光状態を決める相対位相を保持しますが、異なる往復経路間の干渉は計算しません。形状と材料分布は独立に設定するため、球やトーラスは原論文の矩形装置の再現ではありません。
+          </p>
+          <a href="help.html">計算モデル・検証・文献</a>
+        </details>
+      </article>
+    </main>
+    <script>
+      window.addEventListener('error', (e) => {
+        document.getElementById('status').textContent =
+          '起動・表示エラー: ' + (e.message || 'コードを読み込めません。再読み込みしてください。');
+      });
+      window.addEventListener('unhandledrejection', (e) => {
+        document.getElementById('status').textContent = '実行エラー: ' + String(e.reason);
+      });
+    </script>
+    <script src="polynomial.js?v=20261117-distribution1"></script>
+    <script src="landmark-target.js?v=20261117-distribution1"></script>
+    <script src="asphere.js?v=20261117-distribution1"></script>
+    <script src="literature-media.js?v=20261117-distribution1"></script>
+    <script src="optics.js?v=20261117-distribution1"></script>
+    <script src="rkf45.js?v=20261117-distribution1"></script>
+    <script src="branching.js?v=20261117-distribution1"></script>
+    <script src="catalog.js?v=20261117-distribution1"></script>
+    <script src="polarization.js?v=20261117-distribution1"></script>
+    <script src="layered.js?v=20261117-distribution1"></script>
+    <script src="modal.js?v=20261117-distribution1"></script>
+    <script src="coherent.js?v=20261117-distribution1"></script>
+    <script src="coherent-general.js?v=20261117-distribution1"></script>
+    <script src="coherent-interface.js?v=20261117-distribution1"></script>
+    <script src="coherent-finite.js?v=20261117-distribution1"></script>
+    <script src="comparison-difference.js?v=20261117-distribution1"></script>
+    <script src="render-workers.js?v=20261117-distribution1"></script>
+    <script src="phase-comparison.js?v=20261117-distribution1"></script>
+    <script src="comparison.js?v=20261117-distribution1"></script>
+    <script src="gpu-support.js?v=20261117-distribution1"></script>
+    <script src="gpu-comparison.js?v=20261117-distribution1"></script>
+    <script src="context-help.js?v=20261117-distribution1"></script>
+    <script src="workspace-ui.js?v=20261117-distribution1"></script>
+    <script src="data/spectral/cie-visible.js?v=20261117-distribution1"></script>
+    <script src="data/spectral/schott-visible.js?v=20261117-distribution1"></script>
+    <script src="spectral.js?v=20261117-distribution1"></script>
+    <script src="spectral-ui.js?v=20261117-distribution1"></script>
+    <script src="material-picker.js?v=20261117-distribution1"></script>
+    <script src="scene-config.js?v=20261117-distribution1"></script>
+    <script src="render-diagnostics.js?v=20261117-distribution1"></script>
+    <script src="material-notes.js?v=20261117-distribution1"></script>
+    <script src="app.js?v=20261117-distribution1"></script>
+    <script src="paper/selection.js?v=20261117-distribution1"></script>
+    <script src="paper-ui.js?v=20261117-distribution1"></script>
+    <script>
+      WorkspaceUI.init(() => config, refreshRenderView);
+      I18n.init();
+      PaperUI.init();
+    </script>
+    <noscript>JavaScriptが必要です。</noscript>
+  </body>
+</html>

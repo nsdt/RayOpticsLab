@@ -1,0 +1,9 @@
+app/paper/engine/
+app/paper/experiments.json
+app/paper/provenance.json
+app/data/
+dev/
+review*/
+node_modules/
+dist/
+test-results/

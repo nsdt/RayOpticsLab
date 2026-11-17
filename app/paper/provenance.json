@@ -1,0 +1,151 @@
+{
+  "source": "experiments_20260928_isotropic_columns",
+  "engineSHA256": {
+    "polynomial.js": "5cf345058c281fd0262a9d8cd7a5ea93715abe0fd13fad1cca6445e724f712e3",
+    "landmark-target.js": "13cad61909baa8e21a408ebf5f0f4211a122f495a270cccab4974f9013537c1f",
+    "asphere.js": "20e20e776a1a849f755f2695e652a6bbd03046540ae0773cfd06f90e4fc36bfa",
+    "literature-media.js": "461a8a7835c8088dccdd435e9eda096e3cd388165a5bd46d2b497b8f705085be",
+    "optics.js": "d32990e34a85982c0fb732933ad6036144c786aecd11c1ae53cec0e34d62525d",
+    "rkf45.js": "ac974a5ea70eabfdcb77ff5a512029a4eab05b5b6076fa4c94183defe2e426b0",
+    "analytical.js": "5e4a56ce6557ba2fefad19c47f261fc9697191d6c485f273b9cd0f15f6ebc284",
+    "schur.js": "bebe9498413cf9dd2514f529a549e8c762db0ea27220982a5bc579d1e3d2e76b",
+    "approximate.js": "7b352c8707d2109cc2f281cc415be87b85ef10b9e5258f35d28d7af2ff938d1a",
+    "homogeneous.js": "d882fd009b25b34010931ce72a8aaabc82f2690d080fec344ab8b298ee5cddea",
+    "grin.js": "08647cb35b335c6ba3f35c2cef572f86e692728fe85836660fae5aa23b244156",
+    "branching.js": "af0b79bd551f6c84ac072c8be9b572e85f37d928846fb562856457691c5d2f17",
+    "polarization.js": "19e6520e062a683123b97c67bc6087cfb5b3a6c585ebabc1cf47e19688a54515",
+    "spectral.js": "375de78cfea0d3a0ad6c8af1c7784916aa4be01025952988067cccb22fa33b37",
+    "data/spectral/cie-visible.js": "dc64ecca3b191d6614ef696fb32fb1ca84700aac9ac16dac6503ddfb43c3229f",
+    "data/spectral/schott-visible.js": "ec6816063bd427ffe6d0b245ca62e03fda0e626c60787d24e138f9f9e8733db0"
+  },
+  "polarizationInstrumentation": [
+    {
+      "before": "const initial=[...packet.o,...packet.p];",
+      "after": "const initial=[...packet.o,...packet.p],paperSegment=c.paperCapture?[initial.slice()]:undefined;",
+      "count": 1
+    },
+    {
+      "before": "O.recordStep('closed');return event||{...packet,o:x};",
+      "after": "if(paperSegment)paperSegment.push([...x,...packet.p]);O.recordStep('closed');return event||{...packet,o:x,paperSegment};",
+      "count": 1
+    },
+    {
+      "before": "return {...packet,o:s.slice(0,3),p:s.slice(3),E:isotropicGradient(c)?E:bulkField(packet,s,c)};",
+      "after": "if(paperSegment)paperSegment.push(s.slice());return {...packet,o:s.slice(0,3),p:s.slice(3),E:isotropicGradient(c)?E:bulkField(packet,s,c),paperSegment};",
+      "count": 1
+    },
+    {
+      "before": "checkState(next,c,packet.mode,stats);if(isotropicGradient(c))E=transportIsotropic(E,s,next);s=next;",
+      "after": "checkState(next,c,packet.mode,stats);if(isotropicGradient(c))E=transportIsotropic(E,s,next);s=next;if(paperSegment)paperSegment.push(s.slice());",
+      "count": 1
+    },
+    {
+      "before": "r.leaves++;r.weightSum+=v.weight;r.channels[v.tag]+=v.weight;",
+      "after": "r.leaves++;r.weightSum+=v.weight;r.channels[v.tag]+=v.weight;\n    if(c.paperChannels||c.paperCapture){\n      const rgb=O.bg(v.o,dir,c).map(decode),t=O.backgroundDistance(v.o,dir,c),q=Number.isFinite(t)?O.add(v.o,O.mul(dir,t)):null;\n      r.paperChannels??={};for(const key of [v.tag,...(v.reflected?['any_reflection']:[])]){r.paperChannels[key]??=[0,0,0];for(let j=0;j<3;j++)r.paperChannels[key][j]+=rgb[j]*v.weight;}\n      if(!v.reflected&&q){r.paperDirect??={};let z=r.paperDirect[v.tag]??={q:[0,0,0],weight:0};for(let j=0;j<3;j++)z.q[j]+=q[j]*v.weight;z.weight+=v.weight;}\n      if(c.paperCapture){r.paperLeaves??=[];r.paperLeaves.push({o:v.o,d:dir,q,weight:v.weight,tag:v.tag,reflected:v.reflected,events:v.paperEvents||[],segments:v.paperSegments||[]});}\n    }",
+      "count": 1
+    },
+    {
+      "before": "tag,reflected:v.reflected||ch.reflection});",
+      "after": "tag,reflected:v.reflected||ch.reflection,\n      ...(c.paperCapture?{paperEvents:[...(v.paperEvents||[]),{position:x.slice(),incoming:incoming.p.slice(),outgoing:ch.p.slice(),insideBefore:v.inside,insideAfter:inside,mode:ch.mode,reflection:ch.reflection,weight}],paperSegments:[...(v.paperSegments||[]),...(incoming.paperSegment?[{mode:v.mode,states:incoming.paperSegment}]:[])]}:{})});",
+      "count": 1
+    },
+    {
+      "before": "const weight=v.weight*ch.weight;",
+      "after": "const weight=v.weight*ch.weight;if(c.paperDirectOnly&&ch.reflection){r.excludedReflectionWeight=(r.excludedReflectionWeight||0)+weight;continue;}",
+      "count": 1
+    },
+    {
+      "before": "r.accounted=r.weightSum+r.dropped+r.failedWeight+r.unavailableWeight;",
+      "after": "r.accounted=r.weightSum+r.dropped+r.failedWeight+r.unavailableWeight+(r.excludedReflectionWeight||0);",
+      "count": 1
+    }
+  ],
+  "configurationSHA256": "18f55cbedda90041fa2b54126ea14ccf8be0a3fd80245cb27ed6af90d55817cc",
+  "packagedEngineSHA256": {
+    "polynomial.js": "5cf345058c281fd0262a9d8cd7a5ea93715abe0fd13fad1cca6445e724f712e3",
+    "landmark-target.js": "13cad61909baa8e21a408ebf5f0f4211a122f495a270cccab4974f9013537c1f",
+    "asphere.js": "20e20e776a1a849f755f2695e652a6bbd03046540ae0773cfd06f90e4fc36bfa",
+    "literature-media.js": "461a8a7835c8088dccdd435e9eda096e3cd388165a5bd46d2b497b8f705085be",
+    "optics.js": "d32990e34a85982c0fb732933ad6036144c786aecd11c1ae53cec0e34d62525d",
+    "rkf45.js": "ac974a5ea70eabfdcb77ff5a512029a4eab05b5b6076fa4c94183defe2e426b0",
+    "analytical.js": "5e4a56ce6557ba2fefad19c47f261fc9697191d6c485f273b9cd0f15f6ebc284",
+    "schur.js": "bebe9498413cf9dd2514f529a549e8c762db0ea27220982a5bc579d1e3d2e76b",
+    "approximate.js": "7b352c8707d2109cc2f281cc415be87b85ef10b9e5258f35d28d7af2ff938d1a",
+    "homogeneous.js": "d882fd009b25b34010931ce72a8aaabc82f2690d080fec344ab8b298ee5cddea",
+    "grin.js": "08647cb35b335c6ba3f35c2cef572f86e692728fe85836660fae5aa23b244156",
+    "branching.js": "af0b79bd551f6c84ac072c8be9b572e85f37d928846fb562856457691c5d2f17",
+    "polarization.js": "bb8adec6040ba65547f3f8563495ff5a33fe78d85f95ce70aeda06884689210a",
+    "spectral.js": "375de78cfea0d3a0ad6c8af1c7784916aa4be01025952988067cccb22fa33b37",
+    "data/spectral/cie-visible.js": "dc64ecca3b191d6614ef696fb32fb1ca84700aac9ac16dac6503ddfb43c3229f",
+    "data/spectral/schott-visible.js": "ec6816063bd427ffe6d0b245ca62e03fda0e626c60787d24e138f9f9e8733db0"
+  },
+  "protocolSHA256": "cf6837a303a52fda09d5bc56c13e53fa3b63b744cbfc18b330078afa358c1ca5",
+  "runtimeSHA256": {
+    "protocol.js": "cf6837a303a52fda09d5bc56c13e53fa3b63b744cbfc18b330078afa358c1ca5",
+    "selection.js": "440eee108c773630c71076377a7848f289d3458ca93e405eda2d4580d798314d",
+    "worker.js": "6884570c69266321aef8ef10042efdc895d91824a0d89b11c7b589ec663097f0"
+  },
+  "manuscriptSHA256": "f0a70cc7a52d575fd30cee3637ec4d32548f93c167d0c1d1dca3b8f8dd2c265c",
+  "supplementSHA256": "e47b7882eda932d18ae20fa680e5d32937d164225efa034eabac98a025ee34cd",
+  "gpuSHA256": {
+    "gpu-support.js": "328598f043cfe1cb693f65adfb166d68c9e3b32497a02dc9fd7ddf686676a13c",
+    "gpu-transport.js": "db75a6277f1e099502facee3ca8d6a364c6d81f48dc1bb41fbc5055a3b455e6a",
+    "gpu-optics.wgsl": "4967a1188414a4619fc1f89300f395b3ceaa3595e856433dd0cffd9ddb68aa8d",
+    "gpu-numerical.wgsl": "5b8db6142a02690c4fef04fcbf49f468ca83c3f5b390318eec43f3896c526133",
+    "gpu-phase.wgsl": "c891b99df84a283ba59b9e13c2cd026bede6f8ef81d867f59e182fd93db40bea"
+  },
+  "catalogProtocol": "manuscript-20261116-coupling",
+  "imageProtocol": "manuscript-20260928",
+  "referenceFigureSHA256": {
+    "paper/figures/fig00-target.png": "1fbf5d2ec843e9f8e43d5b9ee8df9607a53088ecf7ccc5fd7d9bfbc767b81a37",
+    "paper/figures/compact-overview.png": "ad641b6d23f9f966a89537b614d9abf6047866b1ff3a12e6da7fd9b49b7d451b",
+    "paper/figures/physical-radial.png": "2aa82d6eed7bb09697cef7accf33e8f79748bdcd59463df27aedb5ba958c2ee2",
+    "paper/figures/physical-heliconical.png": "acce9896dc84bc1aee985ad6b3fe91eb0f9c667fb8bc90509fea5d6d9b50e639",
+    "paper/figures/compact-normalized-landmarks.png": "1bb3c72adf107bd6b5ab3bd2ab83ee9b77fa6a377b5032d71c74e35a4b904648",
+    "paper/figures/compact-image-mechanism.png": "a4e21d5f1adb177473c197671e21b6ceac4fad8d900c180efbe73a17dc43ec78",
+    "paper/figures/physical-reflections.png": "56e3329d45e76d11bdccb24e953d993fa69ef9c2f404a8b36967d2c28c4e36cc",
+    "paper/figures/physical-interfaces.png": "08af6bd933a63a06d146d168428801291b77f2523ba9cf9fd4f632911e92916a",
+    "paper/figures/fig08-dispersion.png": "c3a3297e75fbc1ff2f92d3b31814404507c74ea7381bcfe7868538036d2ff205",
+    "paper/figures/fig01-geometry.png": "e3258b03b03a4cb8b474f96c329db9ba63455ae195759bb00e5abc46db14dbef",
+    "paper/figures/atlas-iso-uniform.png": "f0b3e044d483c7619292e1e0e78363754973a3c07631cfc74dc20c5d5d775058",
+    "paper/figures/atlas-uniaxial-uniform.png": "b76afec19b599cc3fe822276b2b9bc37eff644b7b7e6e2ab40f35388a6f9dbbc",
+    "paper/figures/atlas-iso-axial.png": "bf7ed25018b8eeea22d2f1b7db40cbdb62ec92a668fa3d2e8e9a8bd90194704c",
+    "paper/figures/atlas-iso-cylindrical.png": "7d4cc7eb284abe43d0d51e12bb83750327ecda28cfc45048a049c5afa416a76a",
+    "paper/figures/atlas-iso-spherical.png": "fed6712b78e25cd1acc3544badeea794e7763e2351a6f58e8cf9db60c564bdf8",
+    "paper/figures/atlas-axial-2013.png": "fe1b90cffcf49aa8df29c6bef3dfc0c4f52ef5ecad5294d1a1b77e412a4b6067",
+    "paper/figures/atlas-reciprocal.png": "16f18d95c4b38b663e6c15eed629c78b36cf1877632fa7b570e9b54d66a1ccc6",
+    "paper/figures/atlas-quadratic.png": "6c3e11d2be1fd0c05f0d8f5749521ffa0bb2f5d5f80cf52412c56e58c6034b57",
+    "paper/figures/atlas-heliconical.png": "37790e025efe4b935846e7c7b6c3e90db7fe2dc4dd3d2d94893026224d96780e",
+    "paper/figures/atlas-radial-axis.png": "95804919aa9c159533ec54f0a5d1f78fb6ca9bd2447b577d985c83f745261558",
+    "paper/figures/atlas-shear.png": "5b5177aa443eac9bed33d489a3b689efaadc700b306affd94e726f4dfee7c6fd",
+    "paper/figures/atlas-spherical-map.png": "18e47596eb293ee5f0dba364411cc62a0db3378f71a110d59e881dd4025f0959",
+    "paper/figures/atlas-cylindrical-map.png": "ef1ee7e0fa087720764816215046ece9567e8b9fecdef92829b81c30ee6b8779",
+    "paper/figures/atlas-hyperbolic.png": "b02bf0334d6430a282d43e2727f844df16471d75be1b640f9e6d0a343f001a1f",
+    "paper/figures/atlas-eng-2013.png": "187c9a84ed1dd0cb6e8c43c02d29bc00b7dbbc7863070a2ca15645b7576435c7",
+    "paper/figures/fig06-landmark-rays.png": "73277d9e318f7db56862d03c3e77766bc6fb80091a5c91dc173ad466e86d47e5",
+    "paper/figures/atlas-iso-uniform-dispersion-constant.png": "8e3b8c45404b1b57f583881d110110b99fba8a1af5e59555746049dfd614e94e",
+    "paper/figures/atlas-iso-uniform-dispersion-spectral.png": "d64fc833ac504fccd5376603f34f91c12f57b2878106574444c4c2754e5c1918",
+    "paper/figures/atlas-reciprocal-dispersion-constant.png": "d3474cfa2986e62be5cadc98e93432d882e66cb273830d44ce09f6865bb08cb9",
+    "paper/figures/atlas-reciprocal-dispersion-spectral.png": "709c37aff9f588aee35460a87f1f5675f04ed8bbc40eb31a855817ac364dccce",
+    "paper/figures/quantitative-landmarks.png": "cabeebfdd1a7818e66bde55abe9a4675af243e4206f5a3e023b61b41bab711ee",
+    "paper/figures/physical-heliconical-pi-atlas.png": "42d07ac5deab05bcaff12ac622dbed2ac0ca0510353afa71efe8b84470a01473",
+    "paper/figures/physical-reflections-full.png": "0a3794cc0ffe1a6353ecff2a30ce2d92f0fc0daf6bb7ffcd593130bb14e5c405",
+    "paper/figures/internal-coupling-images.png": "3cd46e6a6af276d6037d9a9dcdcf33cbec4ef878487cb3251f77394b8bc6628c",
+    "paper/figures/internal-coupling-central.png": "95704bdf1e3c4778be3e3b715686372dd57503c352a2019797e26c4728d4724e"
+  },
+  "trajectoryAtlas": {
+    "source": "experiments_20261115_trajectory_gallery",
+    "manifestSHA256": "d7007f71c4d71da9a9a8f8e448726775dbc3c0860525c3db9c635161093491a4",
+    "validationSHA256": "6ba287b2998bf678f3123cefc30d3bbcf25cc3c7e501ccba852e9430a1d136db",
+    "cases": 79,
+    "samples": 415,
+    "paths": 577
+  },
+  "analysisArchiveSHA256": "0651168b0d37156b64dba2229f02fe591c911561a1dca151606bf0e56badecc5",
+  "additionalPhysicalComparisons": {
+    "source": "experiments_20261115_physical",
+    "piImageSHA256": "930e501171372512ccb22cbe6f79e107b70168cffa2a991e03a29a66b2032461",
+    "piConfigurationSHA256": "d707de343c201aee67a758b6ace4aaf70ccc388ff9bca1ee0d8be5117042e913",
+    "reflectionDecompositionSHA256": "772b13e0b06a0dab34f445ebbf975e8f60c9f4acd730ad0ea918ae36495e94eb"
+  }
+}

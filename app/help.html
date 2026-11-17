@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Ray Optics Lab — Guide / 利用ガイド</title>
+    <style>
+      body {
+        max-width: 54rem;
+        margin: 3rem auto;
+        padding: 0 1.2rem;
+        font:
+          17px/1.75 system-ui,
+          sans-serif;
+        color: #172b3b;
+      }
+      a {
+        color: #176495;
+      }
+      h1,
+      h2,
+      h3 {
+        line-height: 1.3;
+      }
+      section {
+        margin-top: 3rem;
+      }
+      nav {
+        border-bottom: 1px solid #c8d4dc;
+        padding-bottom: 1rem;
+      }
+      li {
+        margin: 0.4rem 0;
+      }
+      code {
+        background: #eef3f6;
+        padding: 0.1rem 0.3rem;
+      }
+      .note {
+        border-left: 3px solid #7a9aac;
+        padding-left: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="./">Open application / アプリに戻る</a> · <a href="#en">English</a> ·
+      <a href="#ja">日本語</a>
+    </nav>
+    <h1>Ray Optics Lab</h1>
+    <p>Guide / 利用ガイド</p>
+    <section id="en">
+      <h2>Images through optical media</h2>
+      <p>
+        Use Custom rendering to change material and observation settings. Use Manuscript experiments
+        for the retained paper conditions. The language selector changes the interface without
+        changing the scene or image.
+      </p>
+      <h3>Reproduce a paper image</h3>
+      <ol>
+        <li>Open Manuscript experiments, then select the medium and image panel.</li>
+        <li>
+          Choose Manuscript experiment — GPU preferred for the original physical scene with GPU
+          preference, or Archived CPU reference for the retained CPU implementation and sampling.
+        </li>
+        <li>Calculate the image and wait for completion.</li>
+        <li>
+          Save the PNG and its completed calculation record together. Selected settings are a
+          separate export and may differ from the displayed image after a selection change.
+        </li>
+      </ol>
+      <p>
+        Adjust calculation settings permits 4–1024 pixels per side and 8–256 wavelength samples.
+        Restore the manuscript settings before comparing at the original sampling. The catalog
+        contains 80 image conditions and 35 reference figures. Reference figures are saved
+        illustrations; trajectory and quantitative plots use the additional-analysis scripts.
+      </p>
+      <h3>Calculation model</h3>
+      <p>
+        The application uses geometrical optics. Analytical trajectories are evaluated where their
+        conditions hold, with numerical propagation where required. Interface reflection and
+        refraction, the selected polarization approximation and retained path weights determine the
+        image. Changing an approximation can change the physical model.
+      </p>
+      <p>
+        WebGPU uses float32 arithmetic. Pixels that fail precision guards are retraced on CPU. The
+        archived CPU reference uses float64. Source hashes, effective precision and fallback counts
+        are included in the completed record. GPU preparation and CPU fallback may dominate elapsed
+        time.
+      </p>
+    </section>
+    <section id="ja" lang="ja">
+      <h2>光学媒質を通した像を調べる</h2>
+      <p>
+        自由描画では媒質や観察条件を変更できます。論文の保存された条件を使う場合は論文実験のタブを選びます。表示言語を変えても設定や画像は変わりません。
+      </p>
+      <h3>論文の画像を再現する</h3>
+      <ol>
+        <li>論文実験のタブを開き、媒質と画像のパネルを選びます。</li>
+        <li>
+          元の物理条件をGPU優先で計算する場合は「論文の実験条件（GPU優先）」、保存済みCPU実装とサンプリングを再現する場合は「掲載画像と同じCPU基準計算」を選びます。
+        </li>
+        <li>画像を計算して完了を待ちます。</li>
+        <li>
+          PNGとその完了画像の計算記録JSONをセットで保存します。「選択中の設定」は別の出力です。計算後に選択を変えると、表示画像の条件とは一致しなくなります。
+        </li>
+      </ol>
+      <p>
+        条件変更モードでは一辺4–1024画素、波長分割数8–256を選べます。掲載図と同じサンプリングで比較する前には元の設定を復元してください。80条件と35枚の参照図を収録しています。参照図は保存された図であり、光線軌道図や定量評価の再生成には追加解析のスクリプトを使います。
+      </p>
+      <h3>計算モデル</h3>
+      <p>
+        幾何光学に基づく計算です。適用条件を満たす区間では解析解を評価し、必要な区間には数値計算を使います。界面での反射・屈折、選択した偏光の近似、保持した経路の重みを用いて像を計算します。近似の選択を変えると物理的なモデルも変わる場合があります。
+      </p>
+      <p>
+        GPUでは単精度を使い、精度判定を通らない画素をCPUで再計算します。保存済みCPU基準は倍精度です。完了画像の記録にはソースのハッシュ、実際の精度、CPU補完数が含まれます。GPUの準備やCPU補完に多くの時間がかかる場合もあります。
+      </p>
+    </section>
+    <section id="spectral">
+      <h2>Spectral calculation / 分散計算</h2>
+      <p>
+        Spectral rendering traces wavelength samples and integrates radiance with D65 illumination
+        and the CIE 1931 observer. The manuscript uses 128 samples over 380–780 nm. A smaller sample
+        count is useful for exploration, but convergence should be checked before quantitative
+        comparison.
+      </p>
+      <p lang="ja">
+        分散計算では波長ごとに光線を追跡し、D65照明とCIE
+        1931等色関数を用いて輝度を積算します。掲載図は380–780
+        nmを128分割しています。少ない分割数は探索に便利ですが、定量比較の前には収束を確認してください。
+      </p>
+      <p>
+        <a href="data/spectral/SOURCES.md">Data sources / データの出典</a> ·
+        <a href="THIRD_PARTY_NOTICES.md">Third-party notices / 第三者データ</a>
+      </p>
+    </section>
+    <section>
+      <h2>Additional analysis / 追加解析</h2>
+      <p>
+        <a href="paper/analysis-reproduction.zip" download
+          >Download analysis scripts and records / 解析スクリプトと記録をダウンロード</a
+        >
+      </p>
+      <p>
+        Extract the archive and follow its READMEs. Python/Node.js dependencies are needed for these
+        additional analyses, not for browser rendering. Historical labels in the archive are
+        retained.
+      </p>
+      <p lang="ja">
+        展開後にアーカイブ内のREADMEを参照してください。追加解析にはPythonやNode.jsの依存ライブラリが必要ですが、ブラウザでの画像計算には不要です。アーカイブ中の過去の図番号や名称は保持されています。
+      </p>
+    </section>
+  </body>
+</html>
