@@ -52,7 +52,7 @@ const assert = require('node:assert/strict'),
   await waitPaper();
   assert.match(
     await page.locator('#paperStatus').innerText(),
-    /Calculation complete.*Archived CPU reference.*256 × 256/,
+    /Calculation complete.*CPU reference used for the paper.*256 × 256/,
   );
   assert.match(
     await page.locator('#paperStatus').innerText(),

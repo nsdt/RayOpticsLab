@@ -168,7 +168,7 @@
     candidates.sort((a, b) => size(b) - size(a));
     const matrixSize = Math.hypot(...A.map(size));
     if (size(candidates[0]) < 1e-9 * matrixSize * matrixSize)
-      throw Error('二軸の光学軸付近で固有モードが縮退しています');
+      throw Error('二軸の光軸付近で固有モードが縮退しています');
     const E = normalize(candidates[0]),
       H = cross(k, E),
       fieldResidual = size(A.map((row) => dot(row, E))) / matrixSize;
@@ -282,7 +282,7 @@
         mode = h[0] <= h[1] ? 0 : 1;
         dispersionDrift = Math.min(...h);
         if (Math.min(...h) > 2e-7 || Math.abs(h[0] - h[1]) < 1e-8)
-          throw Error('二軸の伝播モードを分離できません（光学軸付近）');
+          throw Error('二軸の伝播モードを分離できません（光軸付近）');
       }
       out.push({ k, p, ...f, F, mode, prop, dispersionDrift, rootResidual: P.residual(poly, q) });
     }
@@ -496,7 +496,7 @@
     }
     if (c.material === 'axial2013Uniaxial') {
       const b = 1 + c.gradient * Math.sin(x[2]);
-      if (!(b > 0)) throw Error('2013 axialの一軸実現の定義域外です');
+      if (!(b > 0)) throw Error('2013 axialの一軸媒質モデルの定義域外です');
       return { ...c, material: 'uniaxial', no: b, ne: 1, tilt: 0, azimuth: 0, axialPair: true };
     }
     const z = x[2],
@@ -554,7 +554,7 @@
     if (O.branching) O.branching.settings(c);
     if (!supported(c))
       throw Error(
-        '偏光輸送は等方均質・等方不均一・一軸均質・二軸均質・正定値common-scale・heliconical・2013 axialの一軸実現・coordinate-shear・molded変換媒質・hyperbolic・ENGの磁気異方性による実現に対応しています。',
+        '偏光輸送は均一等方性・不均一等方性・均一一軸異方性・均一二軸異方性・正定値common-scale・heliconical・2013 axialの一軸媒質モデル・coordinate-shear・molded変換媒質・hyperbolic・磁気異方性を仮定したENGモデルに対応しています。',
       );
     if (!Number.isInteger(c.maxInterfaces) || c.maxInterfaces < 2 || c.maxInterfaces > 64)
       throw Error('最大界面回数は2〜64です');
@@ -574,7 +574,7 @@
       throw Error('正の有限な屈折率が必要です');
     if (varyingModels.includes(c.material)) {
       if (![c.gradient, c.twist, c.tilt, c.azimuth].every(Number.isFinite))
-        throw Error('材料パラメータが不正です');
+        throw Error('媒質パラメータが不正です');
       const zmax = c.shape === 'torus' ? 1.01 : 1;
       if (
         c.material === 'molded2013Transform' &&
@@ -610,7 +610,7 @@
       separation = O.norm(O.cross(axis(local), O.unit(s.slice(3))));
     // Numerical degeneracy guard only, not a test of the physical adiabatic condition.
     if (c.material !== 'axial2013Uniaxial' && separation < 1e-5)
-      throw Error('光学軸付近のモード縮退は断熱追跡の対象外です');
+      throw Error('光軸付近のモード縮退は断熱追跡の対象外です');
   }
   function advanceBulk(s, h, c, mode) {
     // Near a z turning point the z-parameter formulas can fail; O.advance then uses RKF45.
@@ -786,7 +786,7 @@
       if (isotropicGradient(c)) E = transportIsotropic(E, s, next);
       s = next;
     }
-    throw Error('内部伝播が追跡上限に達しました。刻み幅・材料・形状を確認してください');
+    throw Error('内部伝播が追跡上限に達しました。刻み幅・媒質・形状を確認してください');
   }
   // Launch into the interior by following the actual curved ray, updating p and E.
   function launch(x, ch, c, stats) {
@@ -868,7 +868,7 @@
     return { maxRayWork, untracedTolerance };
   }
   function recordCutoff(r, weight, reason) {
-    if (!Number.isFinite(weight) || weight < -1e-12) throw Error('打切りの重みが不正です');
+    if (!Number.isFinite(weight) || weight < -1e-12) throw Error('打ち切りの重みが不正です');
     weight = Math.max(0, weight);
     r.cutoffWeights ??= { threshold: 0, work: 0, interface: 0, internal: 0, tolerance: 0 };
     r.cutoffWeights[reason] += weight;

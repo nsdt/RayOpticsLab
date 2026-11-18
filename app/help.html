@@ -50,49 +50,53 @@
     <h1>Ray Optics Lab</h1>
     <p>Guide / 利用ガイド</p>
     <section id="en">
-      <h2>Images through optical media</h2>
+      <h2>Explore images observed through optical media</h2>
       <p>
-        Use Custom rendering to change material and observation settings. Use Manuscript experiments
-        for the retained paper conditions. The language selector changes the interface without
-        changing the scene or image.
+        Use Custom rendering to change the medium and observation settings. Select Paper experiments
+        to use the saved experimental conditions from the paper. Changing the interface language
+        does not change the settings or the rendered image.
       </p>
-      <h3>Reproduce a paper image</h3>
+      <h3>Reproduce an image from the paper</h3>
       <ol>
-        <li>Open Manuscript experiments, then select the medium and image panel.</li>
+        <li>Open Paper experiments, then select the medium and image panel.</li>
         <li>
-          Choose Manuscript experiment — GPU preferred for the original physical scene with GPU
-          preference, or Archived CPU reference for the retained CPU implementation and sampling.
+          Select Paper settings (GPU preferred) to use the paper's physical conditions with GPU
+          calculation where available. Select CPU reference used for the paper to use the preserved
+          CPU implementation and original sampling.
         </li>
-        <li>Calculate the image and wait for completion.</li>
+        <li>Click Calculate image and wait for the calculation to finish.</li>
         <li>
-          Save the PNG and its completed calculation record together. Selected settings are a
-          separate export and may differ from the displayed image after a selection change.
+          Save the image (PNG) and its calculation record (JSON) together. Save selected settings
+          (JSON) is a separate export. If you change the selection after a calculation, the selected
+          settings no longer describe the displayed image.
         </li>
       </ol>
       <p>
-        Adjust calculation settings permits 4–1024 pixels per side and 8–256 wavelength samples.
-        Restore the manuscript settings before comparing at the original sampling. The catalog
-        contains 80 image conditions and 35 reference figures. Reference figures are saved
-        illustrations; trajectory and quantitative plots use the additional-analysis scripts.
+        In the Adjust calculation settings mode, you can choose 4–1024 pixels per side and 8–256
+        wavelength samples. Restore the original settings before comparing results at the sampling
+        used for the paper figures. The catalog contains 80 experimental conditions and 35 reference
+        figures. Reference figures are saved illustrations. To regenerate ray-trajectory plots and
+        quantitative analyses, use the scripts in the additional-analysis download.
       </p>
       <h3>Calculation model</h3>
       <p>
-        The application uses geometrical optics. Analytical trajectories are evaluated where their
-        conditions hold, with numerical propagation where required. Interface reflection and
-        refraction, the selected polarization approximation and retained path weights determine the
-        image. Changing an approximation can change the physical model.
+        The calculation is based on geometrical optics. Analytical solutions are evaluated where
+        their conditions hold, and numerical integration is used where required. Images are
+        calculated from interface reflection and refraction, the selected polarization
+        approximation, and the weights of the retained ray paths. Changing an approximation can
+        change the physical model.
       </p>
       <p>
-        WebGPU uses float32 arithmetic. Pixels that fail precision guards are retraced on CPU. The
-        archived CPU reference uses float64. Source hashes, effective precision and fallback counts
-        are included in the completed record. GPU preparation and CPU fallback may dominate elapsed
-        time.
+        GPU calculations use single precision. Pixels that fail the accuracy checks are recalculated
+        on the CPU. The preserved CPU reference uses double precision. The calculation record
+        includes source hashes, the numerical precision used and the CPU recalculation count. GPU
+        preparation and CPU recalculation can account for a substantial part of the total time.
       </p>
     </section>
     <section id="ja" lang="ja">
       <h2>光学媒質を通した像を調べる</h2>
       <p>
-        自由描画では媒質や観察条件を変更できます。論文の保存された条件を使う場合は論文実験のタブを選びます。表示言語を変えても設定や画像は変わりません。
+        自由描画では媒質や観察条件を変更できます。保存済みの論文の実験条件を使う場合は論文実験のタブを選びます。表示言語を変えても設定や画像は変わりません。
       </p>
       <h3>論文の画像を再現する</h3>
       <ol>
@@ -102,7 +106,7 @@
         </li>
         <li>画像を計算して完了を待ちます。</li>
         <li>
-          PNGとその完了画像の計算記録JSONをセットで保存します。「選択中の設定」は別の出力です。計算後に選択を変えると、表示画像の条件とは一致しなくなります。
+          PNGとその画像の計算記録JSONをセットで保存します。「選択中の設定」は別の出力です。計算後に選択を変えると、表示画像の条件とは一致しなくなります。
         </li>
       </ol>
       <p>
@@ -113,16 +117,16 @@
         幾何光学に基づく計算です。適用条件を満たす区間では解析解を評価し、必要な区間には数値計算を使います。界面での反射・屈折、選択した偏光の近似、保持した経路の重みを用いて像を計算します。近似の選択を変えると物理的なモデルも変わる場合があります。
       </p>
       <p>
-        GPUでは単精度を使い、精度判定を通らない画素をCPUで再計算します。保存済みCPU基準は倍精度です。完了画像の記録にはソースのハッシュ、実際の精度、CPU補完数が含まれます。GPUの準備やCPU補完に多くの時間がかかる場合もあります。
+        GPUでは単精度を使い、精度判定を通らない画素をCPUで再計算します。保存済みCPU基準は倍精度です。計算済み画像の記録にはソースのハッシュ、実際の精度、CPU補完数が含まれます。GPUの準備やCPU補完に多くの時間がかかる場合もあります。
       </p>
     </section>
     <section id="spectral">
       <h2>Spectral calculation / 分散計算</h2>
       <p>
-        Spectral rendering traces wavelength samples and integrates radiance with D65 illumination
-        and the CIE 1931 observer. The manuscript uses 128 samples over 380–780 nm. A smaller sample
-        count is useful for exploration, but convergence should be checked before quantitative
-        comparison.
+        Spectral rendering traces rays at each sampled wavelength and integrates radiance using D65
+        illumination and the CIE 1931 color-matching functions. The paper figures use 128 samples
+        over 380–780 nm. Fewer samples are useful for exploration, but convergence should be checked
+        before quantitative comparisons.
       </p>
       <p lang="ja">
         分散計算では波長ごとに光線を追跡し、D65照明とCIE
@@ -142,9 +146,9 @@
         >
       </p>
       <p>
-        Extract the archive and follow its READMEs. Python/Node.js dependencies are needed for these
-        additional analyses, not for browser rendering. Historical labels in the archive are
-        retained.
+        Extract the archive and follow the included README files. The additional analyses require
+        Python or Node.js and the listed libraries. Browser image calculations do not require these
+        dependencies. Historical figure numbers and names are preserved in the archive.
       </p>
       <p lang="ja">
         展開後にアーカイブ内のREADMEを参照してください。追加解析にはPythonやNode.jsの依存ライブラリが必要ですが、ブラウザでの画像計算には不要です。アーカイブ中の過去の図番号や名称は保持されています。

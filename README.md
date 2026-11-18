@@ -48,7 +48,7 @@ Python or installation.
 4. Save the image or scene settings if needed.
 
 Changing language does not alter optical parameters or rendered pixels. The
-comparison workspaces contain development examples. Use **Manuscript experiments**
+comparison workspaces contain development examples. Use **Paper experiments**
 for the paper's retained conditions.
 
 ## Reproduce a manuscript image
@@ -57,15 +57,15 @@ The application contains **80 image conditions**: 76 monochromatic and 4 spectra
 There are **35 reference figures**: article Figures 1–9 and Supplement Figures
 S1–S26. A reference figure may contain several panels or a quantitative plot.
 
-1. Open **Manuscript experiments**.
+1. Open **Paper experiments**.
 2. Select the medium/figure and the desired panel. The displayed description
    identifies the corresponding experiment.
 3. Choose the calculation mode:
 
    | Mode | Purpose |
    | --- | --- |
-   | **Manuscript experiment — GPU preferred** | Retain the paper's scene, resolution and wavelength sampling; prefer GPU with CPU fallback. |
-   | **Archived CPU reference** | Use the preserved CPU implementation, original numerical tolerances and original sampling. Choose this for the closest reproduction of the archived image. |
+   | **Paper settings (GPU preferred)** | Retain the paper's scene, resolution and wavelength sampling; prefer GPU with CPU fallback. |
+   | **CPU reference used for the paper** | Use the preserved CPU implementation, original numerical tolerances and original sampling. Choose this for the closest reproduction of the archived image. |
    | **Adjust calculation settings** | Keep the physical scene and vary the backend, resolution or wavelength sampling for comparison. |
 
 4. Click **Calculate image** and wait for completion.

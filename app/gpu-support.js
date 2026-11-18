@@ -61,7 +61,7 @@
       c.branchPolicy !== 'off' &&
       c.branchDepth > 0
     )
-      return { ok: false, reason: '放射状光学軸・座標変換媒質の内部モード分配はCPUで計算します。' };
+      return { ok: false, reason: '放射状光軸・座標変換媒質の内部モード分配はCPUで計算します。' };
     if (c.branchDebug)
       return { ok: false, reason: '光線イベントの詳細記録を指定した場合はCPUで計算します。' };
     if (c.transport !== 'polarized')
@@ -72,7 +72,7 @@
       return {
         ok: false,
         reason:
-          'GPU版の媒質は等方均質・一軸均質・二軸均質・等方不均一・異方不均一の閉式・数値軌道に対応します。',
+          'GPU版の媒質は均一等方性・均一一軸異方性・均一二軸異方性・不均一等方性・不均一異方性の閉式解・数値軌道に対応します。',
       };
     if (c.material === 'biaxial') {
       const indices = [c.nx, c.ny, c.nz],
@@ -85,7 +85,7 @@
         };
     }
     if (c.branchModel === 'layers')
-      return { ok: false, reason: '比較用の均質層モデルはCPUで計算します。設定は変更しません。' };
+      return { ok: false, reason: '比較用の均一層モデルはCPUで計算します。設定は変更しません。' };
     if (
       c.branchModel === 'coherent' &&
       !['common', 'quadratic', 'heliconical', 'axial2013Uniaxial'].includes(c.material)
@@ -117,14 +117,14 @@
       const method =
         c.solver === 'auto' &&
         ['sphericalSquared', 'radialSquared', 'axialSquared'].includes(c.material)
-          ? '閉式軌道'
+          ? '閉式解による軌道'
           : c.solver !== 'rkf45' && ['axialSquared', 'axial'].includes(c.material)
             ? '積分表示の数値求積（折り返し付近はRKF45）'
             : 'RKF45数値積分';
       return {
         ok: true,
         reason:
-          '等方不均一の立方体・球・トーラス・非球面レンズに対応。内部は' +
+          '不均一等方性の立方体・球・トーラス・非球面レンズに対応。内部は' +
           method +
           'と曲線に沿う偏光輸送、表面は局所屈折率による反射・透過をGPUで計算します。',
       };
@@ -139,7 +139,7 @@
               'もGPU計算します。'
             : '';
       const method = {
-        auto: '閉式を優先し、条件外ではSchur求積、折り返し付近ではRKF45',
+        auto: '閉式解を優先し、条件外ではSchur求積、折り返し付近ではRKF45',
         schur: 'Schur求積を優先し、使えない区間ではRKF45',
         rkf45: 'Hamilton方程式のRKF45',
       }[c.solver];

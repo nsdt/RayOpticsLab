@@ -12,7 +12,7 @@
   const shapes = ['cube', 'sphere', 'torus'];
   const selected = (c) => Q.selected(c) && c.coherentInterface === 'finite-resolved';
   const pairCondition = (e) =>
-    /前方2モード|両モードの非接線|z折り返し|zが単調|光学軸付近で縮退/.test(e.message);
+    /前方2モード|両モードの非接線|z折り返し|zが単調|光軸付近で縮退/.test(e.message);
   const state = (v) => [...v.o, ...v.p];
   const packet = (s, m, c) => ({
     o: s.slice(0, 3),
@@ -71,7 +71,7 @@
         p = initial.slice(3),
         v = O.velocity(x, p, c, mode),
         hit = F.interiorHit(x, O.unit(v), c.shape);
-      if (!hit) throw Error('均質区間の出口を検出できません');
+      if (!hit) throw Error('均一区間の出口を検出できません');
       O.recordStep('closed');
       return {
         state: [...hit, ...p],

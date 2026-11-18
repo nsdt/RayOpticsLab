@@ -1,5 +1,5 @@
 // Version every dependency: a new worker URL alone does not invalidate importScripts caches.
-const WORKER_BUILD = '20261117-distribution1';
+const WORKER_BUILD = '20261118-english1';
 importScripts(
   ...[
     'polynomial.js',

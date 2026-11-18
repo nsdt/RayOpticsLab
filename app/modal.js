@@ -34,7 +34,7 @@
         ph = (local.azimuth * Math.PI) / 180,
         a = [Math.sin(th) * Math.cos(ph), Math.sin(th) * Math.sin(ph), Math.cos(th)];
       if (modes.some((f) => O.norm(O.cross(a, O.unit(f.p))) < 1e-5))
-        throw Error('固有モードが光学軸付近で縮退しています');
+        throw Error('固有モードが光軸付近で縮退しています');
     }
     if (
       Math.abs(inner(modes[0], modes[1], sign)) > 1e-6 ||

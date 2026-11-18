@@ -81,7 +81,7 @@
     if (m === 'axial2013' || m === 'axial2013Uniaxial') {
       let b = 1 + g * Math.sin(z);
       if (m === 'axial2013Uniaxial' && b <= 0)
-        throw Error('2013 axialの一軸実現には1+g sin z > 0が必要です');
+        throw Error('2013 axialの一軸媒質モデルには1+g sin z > 0が必要です');
       return diag(m === 'axial2013Uniaxial' && mode === 0 ? [b * b, b * b, b * b] : [1, 1, b * b]);
     }
     if (m === 'eng2013' || m === 'eng2013Magnetic') {

@@ -88,8 +88,8 @@
   "manuscriptSHA256": "f0a70cc7a52d575fd30cee3637ec4d32548f93c167d0c1d1dca3b8f8dd2c265c",
   "supplementSHA256": "e47b7882eda932d18ae20fa680e5d32937d164225efa034eabac98a025ee34cd",
   "gpuSHA256": {
-    "gpu-support.js": "328598f043cfe1cb693f65adfb166d68c9e3b32497a02dc9fd7ddf686676a13c",
-    "gpu-transport.js": "db75a6277f1e099502facee3ca8d6a364c6d81f48dc1bb41fbc5055a3b455e6a",
+    "gpu-support.js": "d0ca7bc3b1db0772474fbbf0184999cdc63f964cbe88857b3f63e9d314c70252",
+    "gpu-transport.js": "f3e70f64ce713b8b3ccd70ad43f9eb2f4ec7a81194d78aab4fbf88f959a6f207",
     "gpu-optics.wgsl": "4967a1188414a4619fc1f89300f395b3ceaa3595e856433dd0cffd9ddb68aa8d",
     "gpu-numerical.wgsl": "5b8db6142a02690c4fef04fcbf49f468ca83c3f5b390318eec43f3896c526133",
     "gpu-phase.wgsl": "c891b99df84a283ba59b9e13c2cd026bede6f8ef81d867f59e182fd93db40bea"

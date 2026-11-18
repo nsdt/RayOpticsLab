@@ -43,7 +43,7 @@
   function settings(c) {
     const s = { ...defaults, ...c };
     if (!['equal', 'layers', 'modal', 'coherent'].includes(s.branchModel))
-      throw Error('内部の分配モデルが不正です');
+      throw Error('媒質内での強度の分配方法が不正です');
     if (!['off', 'planes', 'distributed', 'overlap'].includes(s.branchPolicy))
       throw Error('分岐位置の形式が不正です');
     if (s.branchPolicy === 'off' || !supported(s)) return { ...s, planes: [] };

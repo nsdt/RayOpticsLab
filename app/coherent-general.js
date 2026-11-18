@@ -18,7 +18,7 @@
     if (F.coherentFinite?.selected(c)) F.coherentFinite.validate(c);
     if (!models.includes(c.material) || (c.shape !== 'slab' && !F.coherentFinite?.selected(c)))
       throw Error(
-        '位相輸送の対象はHeliconical・2種のCommon-scale・2013 axialの一軸実現です。有限形状では「局所表面で光線を分ける近似」を選んでください。',
+        '位相輸送の対象はHeliconical・2種のCommon-scale・2013 axialの一軸媒質モデルです。有限形状では「局所表面で光線を分ける近似」を選んでください。',
       );
     if (
       !['resolved', 'retained', 'coupled', 'coupled-dephased', 'finite-resolved'].includes(

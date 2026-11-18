@@ -27,14 +27,14 @@
       hit = s.hitPixels || 0;
     $('budgetStats').textContent =
       (done ? '追跡結果' : '追跡中') +
-      '：省略する光の目安 ' +
+      '：追跡を省略する寄与の目安 ' +
       pct(c.untracedTolerance) +
       '。目安の超過・計算失敗 ' +
       count(s.overBudgetPixels) +
       ' / ' +
       count(n) +
       u +
-      '。未解決の重み：物体に当たった' +
+      '。未評価の重み：物体と交差した光線に対応する' +
       u +
       'の平均 ' +
       (hit ? pct(s.hitUnresolved / hit) : '対象なし') +
@@ -66,7 +66,7 @@
       count(s.maxProcessedRays) +
       '、待機数の最大 ' +
       count(s.maxPendingRays) +
-      '。未解決量には計算失敗・非伝播を含みます。光学モデルや数値計算そのものの誤差とは別です。';
+      '。未評価の重みには、計算が失敗した光線や伝播しない光線の寄与も含みます。光学モデルや数値計算そのものの誤差とは別です。';
   }
   function trace(s, c, n) {
     const items =
@@ -90,7 +90,7 @@
     items.push('条件外 ' + count(s.error) + unit(s), '最大 |2H−1| ' + exp(s.drift));
     if (s.internalBranches)
       items.push(
-        '内部の最大深さ ' + count(s.maxInternalDepth),
+        '媒質内の最大分岐回数 ' + count(s.maxInternalDepth),
         '非伝播の重み ' + pct(s.unavailableWeight / n),
       );
     if (c.material === 'biaxial')
@@ -103,13 +103,13 @@
       e = s.evaluations;
     if (e)
       parts.push(
-        '軌道の評価回数：閉形式 ' +
+        '軌道の評価回数：閉式解 ' +
           count(e.closed) +
           ' / 積分表示の数値求積 ' +
           count(e.quadrature) +
           ' / ODE ' +
           count(e.ode) +
-          ' / small-slope近似 ' +
+          ' / 小傾斜近似 ' +
           count(e.approximate) +
           ' / 層内の直線 ' +
           count(e.layered) +
@@ -121,7 +121,7 @@
       );
     if (c.branchModel === 'layers')
       parts.push(
-        '均質層近似：' +
+        '均一層近似：' +
           count(s.layerSegments) +
           '区間。内部上限による省略 ' +
           pct(s.layerLimitWeight / n) +
@@ -131,7 +131,7 @@
       );
     if (c.branchModel === 'modal' && c.branchPolicy !== 'off')
       parts.push(
-        'モード分配：閉式 ' +
+        'モード分配：閉式解 ' +
           count(s.modalClosed) +
           ' / 求積 ' +
           count(s.modalQuadrature) +
@@ -173,7 +173,7 @@
           count(s.phaseBoundaryProjections) +
           '回、残る単独経路 ' +
           count(s.phaseBoundaryTails) +
-          '本。条件外で単独モードへ近似 ' +
+          '本。条件外で単独モードで近似 ' +
           count(s.phaseAdiabaticSegments) +
           '区間 / 累計重み ' +
           pct(s.phaseAdiabaticWeight / n) +

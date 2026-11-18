@@ -124,10 +124,10 @@
       l2 = (nm / 1000) ** 2;
     if (!data)
       throw Error(
-        'この材料には分散データが登録されていません。分散式を選ぶか、Cauchy近似・分散なしを明示的に選んでください。',
+        'この媒質には分散データが登録されていません。分散式を選ぶか、Cauchy近似・分散なしを明示的に選んでください。',
       );
     if (data.type !== family(c))
-      throw Error('分散データの主屈折率の種類が材料モデルに合いません。');
+      throw Error('分散データの主屈折率の種類が媒質モデルに合いません。');
     if (nm < data.min - 1e-8 || nm > data.max + 1e-8)
       throw Error(
         data.label +
@@ -172,7 +172,7 @@
       };
     if (model === 'cauchy') {
       if (!keys(c).length)
-        throw Error('この構成式には独立した主屈折率がありません。Cauchy近似は選べません。');
+        throw Error('この媒質モデルでは主屈折率を独立に指定できないため、Cauchy近似は選べません。');
       const bs = {
         n: 'cauchyB',
         no: 'cauchyBo',
@@ -199,7 +199,7 @@
     if (!['off', 'on'].includes(c.spectralMode)) throw Error('分散の設定が不正です。');
     if (!enabled(c)) return;
     if (c.transport !== 'polarized')
-      throw Error('スペクトル描画には反射・屈折の強度を定義できる材料モデルが必要です。');
+      throw Error('スペクトル描画には反射・屈折の強度を定義できる媒質モデルが必要です。');
     if (!['auto', 'constant', 'cauchy', ...Object.keys(datasets)].includes(c.spectralModel))
       throw Error('分散モデルが不正です。');
     if (
@@ -288,7 +288,7 @@
     ];
   }
   function description(c) {
-    if (!enabled(c)) return '単色の材料係数・従来のRGB背景';
+    if (!enabled(c)) return '単色の物性値・従来のRGB背景';
     const d = datasets[source(c)];
     return (
       c.spectralMin +

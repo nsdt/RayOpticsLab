@@ -9,16 +9,16 @@
     nx: ['nₓ', 0.05, 3, 0.00001],
     ny: ['nᵧ', 0.05, 3, 0.00001],
     nz: ['n𝓏', 0.05, 3, 0.00001],
-    gradient: ['勾配 / scale係数 g', -1, 1, 0.001],
+    gradient: ['空間分布の係数 g', -1, 1, 0.001],
     engStrength: ['ENG軸方向係数', 0, 20, 0.01],
     radialRadius: ['放射状媒質の半径尺度 R', 5.5, 12, 0.05],
     transformInner: ['座標変換の内半径 a', 0, 1.5, 0.01],
     transformOuter: ['座標変換の外半径 b', 4.6, 8, 0.05],
-    tilt: ['光学軸の傾き（＋zから）°', 0, 90, 1],
-    azimuth: ['光学軸の方位角 °', -180, 180, 1],
+    tilt: ['光軸の傾き（＋zから）°', 0, 90, 1],
+    azimuth: ['光軸の方位角 °', -180, 180, 1],
     roll: ['第3主軸まわりの回転 °', -180, 180, 1],
     twist: ['回転率 Ω', 0, 6.28, 0.01],
-    shift: ['shear変位 Δx', -1, 1, 0.01],
+    shift: ['せん断変換の変位 Δx', -1, 1, 0.01],
     fov: ['透視投影の画角 °', 4, 70, 1],
     yaw: ['視点の水平角 °', -45, 45, 1],
     pitch: ['視点の仰角 °', -35, 35, 1],
@@ -73,7 +73,7 @@
       throw Error('背景は物体の奥に設定してください（z正側から観察：−6〜−2、z負側：2〜6）');
   }
   function validate(c) {
-    if (!MaterialCatalog.models[c.material]) throw Error('材料モデルが不正です');
+    if (!MaterialCatalog.models[c.material]) throw Error('媒質モデルが不正です');
     validateView(c);
     if (!Number.isInteger(c.resolution) || c.resolution < 4 || c.resolution > 1024)
       throw Error('画像の一辺は4〜1024画素の整数で指定してください');
@@ -135,7 +135,7 @@
     const transport = Optics.polarization.supported(c) ? 'polarized' : 'legacy';
     if (c.transport !== transport)
       warnings.push(
-        '材料モデルに合わせて光の計算方式を設定しました。以前の簡易計算とは明るさが変わる場合があります。',
+        '媒質モデルに合わせて光の計算方式を設定しました。以前の簡易計算とは明るさが変わる場合があります。',
       );
     c.transport = transport;
     let settings = { ...Optics.defaults, ...c, maxSteps: 650 };

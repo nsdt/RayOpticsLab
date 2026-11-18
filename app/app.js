@@ -1,4 +1,4 @@
-const APP_BUILD = '20261117-distribution1';
+const APP_BUILD = '20261118-english1';
 const $ = (id) => document.getElementById(id);
 let config = SceneConfig.standard(),
   worker = null,
@@ -152,9 +152,9 @@ function syncOrientationNote() {
     varying = config.material === 'heliconical';
   $('orientationNote').textContent =
     (biax
-      ? '第3主軸の向きを指定します。二軸結晶の光学軸とは異なります。'
-      : '光学軸の向きを指定します。') +
-    '材料プリセットのまま編集できます。傾き0°は＋z方向。方位角0°は＋x側、90°は＋y側です。' +
+      ? '第3主軸の向きを指定します。二軸結晶の光軸とは異なります。'
+      : '光軸の向きを指定します。') +
+    'プリセットを選んだまま、軸の向きを変更できます。傾き0°は＋z方向です。方位角0°は＋x側、90°は＋y側を向きます。' +
     (varying
       ? ' 方位角はz=0での値です。helicalプリセットの傾き90°を変更すると任意指定になります。'
       : '') +
@@ -175,8 +175,9 @@ function dirty() {
   GPUBackendUI.sync(config);
   $('exampleNotice').hidden = true;
   updateSummary();
-  $('methodStats').textContent = '計算法の実測内訳は、現在の設定でレンダリングすると更新されます。';
-  $('status').textContent = '設定を変更しました。レンダリングで更新します。';
+  $('methodStats').textContent =
+    '計算法ごとの使用回数は、現在の設定で画像を計算すると更新されます。';
+  $('status').textContent = '設定を変更しました。画像を再計算すると表示が更新されます。';
 }
 function sync() {
   for (const [k, v] of Object.entries(Spectral.defaults)) config[k] ??= v;
@@ -207,12 +208,12 @@ function sync() {
   if (model.type.endsWith('Gradient')) {
     for (const [name, test] of [
       [
-        '閉形式を利用できるモデル（条件付きも含む）',
-        (m) => m.form.includes('閉形式') && !m.form.includes('近似方程式'),
+        '閉式解を利用できるモデル（条件付きも含む）',
+        (m) => m.form.includes('閉式解') && !m.form.includes('近似方程式'),
       ],
       [
         '数値積分・近似モデル（比較用）',
-        (m) => !m.form.includes('閉形式') || m.form.includes('近似方程式'),
+        (m) => !m.form.includes('閉式解') || m.form.includes('近似方程式'),
       ],
     ]) {
       const group = document.createElement('optgroup');
@@ -267,7 +268,7 @@ function sync() {
   const preset = MaterialCatalog.presets.find((p) => p.id === config.preset);
   $('presetNote').textContent = preset
     ? preset.description
-    : '材料タイプ → 材料モデル → パラメータの順に指定します。';
+    : '媒質の種類 → 媒質モデル → パラメータの順に指定します。';
   $('presetSource').replaceChildren();
   if (preset?.source) {
     const link = document.createElement('a');
@@ -344,21 +345,21 @@ function validateMedium() {
 }
 function solverDescription() {
   if (Optics.polarization.coherent.selected(config))
-    return '軌道は条件を満たす閉形式解、Schur積分表示の数値求積、ODEから選びます。位相輸送は別の計算で、正面heliconicalでは行列指数の解析評価、一般条件では相関を保持する適応数値積分を使います。';
+    return '軌道は条件を満たす閉式解、Schur積分表示の数値求積、ODEから選びます。位相輸送は別の計算で、正面heliconicalでは行列指数の解析評価、一般条件では相関を保持する適応数値積分を使います。';
   const m = config.material;
   if (['isotropic', 'uniaxial', 'biaxial'].includes(m))
     return '内部は解析的な直線。球・立方体は解析交差、トーラスは四次方程式で交点を求めます。';
   if (m === 'moldedApprox')
-    return 'small-slope近似方程式の閉形式です。元の光線方程式の厳密解とは区別します。';
+    return '小傾斜近似方程式の閉式解です。元の光線方程式の厳密解とは区別します。';
   if (config.solver === 'rkf45') return '選択中：Hamilton方程式をRKF45で数値積分。';
   if (config.solver === 'schur')
-    return '選択中：積分表示を4点Gauss–Legendreで数値求積。適用外はRKF45。未評価積分を含む表現は閉形式とは区別します。';
+    return '選択中：積分表示を4点Gauss–Legendreで数値求積。適用外はRKF45。未評価積分を含む表現は閉式解とは区別します。';
   return (
     (Optics.polarization.isotropicGradient(config) && config.transport === 'polarized'
       ? '以下は軌道の計算法です。偏光は曲がった軌道に沿って数値輸送し、表面の反射・透過率を局所屈折率から計算します。 '
       : '') +
-    '自動：条件を満たす光線区間は閉形式、軸方向の積分表示が使える区間は数値求積、残りはODE数値積分。' +
-    (m === 'heliconical' ? ' 螺旋閉形式は横運動量p⊥=0の光線に限定されます。' : '') +
+    '自動：条件を満たす光線区間は閉式解、軸方向の積分表示が使える区間は数値求積、残りはODE数値積分。' +
+    (m === 'heliconical' ? ' 螺旋閉式解は横運動量p⊥=0の光線に限定されます。' : '') +
     (config.transport === 'polarized'
       ? ' 表面の交点は数値探索し、指定分岐面以外の区間は同じ種類の光線を追跡します。'
       : ' 界面・指定分岐位置で区間を区切ります。')
@@ -647,7 +648,7 @@ if (document.modelContext?.registerTool) {
   try {
     document.modelContext.registerTool({
       name: 'render_optics',
-      description: '現在の画面設定で光学像のレンダリングを開始する。',
+      description: '現在の設定で画像の計算を開始します。',
       inputSchema: { type: 'object', properties: {}, additionalProperties: false },
       execute: () => {
         render();
@@ -702,7 +703,7 @@ function syncEntryMode() {
   $('mode').value = config.mode;
   $('mode').disabled = single;
   $('entryNote').textContent = single
-    ? 'この材料の簡易計算では、一種類の透過光線を追跡します。'
+    ? 'この媒質の簡易計算では、一種類の透過光線を追跡します。'
     : (biaxial
         ? '入口から光線1・2のどちらを追跡するか選びます。'
         : '入口から常光線・異常光線のどちらを追跡するか選びます。') +
@@ -752,17 +753,17 @@ function syncBranches() {
   $('planesHelp').hidden = config.branchPolicy !== 'planes';
   $('distributedFields').hidden = config.branchPolicy !== 'distributed';
   $('branchNote').textContent = uniform
-    ? 'この設定では媒質は均質です。入口からの光線はそれぞれ内部を直進します。内部に新たな分岐を加える設定はありません。'
+    ? 'この設定では媒質は均一です。入口からの光線はそれぞれ内部を直進します。内部に新たな分岐を加える設定はありません。'
     : supported
       ? '屈折率や軸の向きの変化に沿って光線を追跡します。区切らない場合は、内部で光線の種類を切り替えません。下の設定で、解析軌道を保つモード分配の近似や各50%の比較を追加できます。'
       : Optics.polarization.isotropicGradient(config)
-        ? '屈折率の変化で光線が曲がります。二つの偏光は同じ軌道を進み、ordinary／extraordinaryへの分離や内部の1:1分岐はありません。'
+        ? '屈折率の変化に応じて光線が曲がります。二つの偏光は同じ軌道を進み、常光線と異常光線への分離や、媒質内での1:1の分岐はありません。'
         : Optics.polarization.transformation(config)
           ? 'この変換媒質は非複屈折です。二つの偏光が同じ軌道を進むため、二本の異なる光線への内部分岐は設定しません。'
           : ['hyperbolic', 'eng2013Magnetic'].includes(config.material)
             ? 'この設定では異常光線 eだけが内部を伝播します。常光線 oは伝播できないため、内部で二本の光線に分ける設定はありません。'
             : ['axial2013', 'eng2013', 'molded2013', 'moldedApprox'].includes(config.material)
-              ? 'この材料は一種類の光学計量に沿った軌道を追跡します。別の物性の仮定を使うモデルへの切替は、「形状と材料」欄で選べます。'
+              ? 'この媒質は一種類の光学計量に沿った軌道を追跡します。別の物性の仮定を使うモデルへの切替は、「形状と媒質」欄で選べます。'
               : '二種類の光線に分離する設定ではないため、内部の1:1分岐は使いません。';
   $('materialRealizations').hidden = ![
     'axial2013',
@@ -776,33 +777,33 @@ function syncBranches() {
   $('moldedRealization').textContent =
     config.material === 'moldedApprox'
       ? '近似前の計量を変換媒質として使う（ε＝μ）'
-      : '変換媒質としての実現へ（ε＝μの仮定）';
+      : '変換媒質モデルに切り替える（ε＝μ）';
   try {
     const planes = (
       layered ? Optics.polarization.layered.settings(config) : Optics.branching.settings(config)
     ).planes;
     $('branchPreview').textContent = planes.length
       ? '使用するz座標：' + planes.map((v) => Number(v.toFixed(4))).join(', ')
-      : '内部の仮定分岐は追加しません。';
+      : '媒質内に追加の分岐は設定しません。';
   } catch (e) {
     $('branchPreview').textContent = e.message;
   }
   const depth = config.branchDepth,
     roots = config.mode === 2 ? 2 : 1;
   $('branchModelNote').textContent = modal
-    ? '元の連続媒質を、使える区間では閉形式解で追跡します。条件外は数値求積・ODEへ切り替えます。分配だけを指定位置で近似し、子光線もその位置から元の解析軌道で進めます。'
+    ? '元の連続媒質を、使える区間では閉式解で追跡します。条件外は数値求積・ODEへ切り替えます。分配だけを指定位置で近似し、子光線もその位置から元の解析軌道で進めます。'
     : layered
-      ? '各層の中央zで元の屈折率と光学軸を評価し、層内では一定にします。層境界で偏光依存の反射・透過を計算します。入口・出口にも、その層の物性を使います。'
+      ? '各層の中央zで元の屈折率と光軸を評価し、層内では一定にします。層境界で偏光依存の反射・透過を計算します。入口・出口にも、その層の物性を使います。'
       : '元の連続媒質の光線を追跡し、指定した面で各50%に分けます。偏光に基づく変換率の予測ではありません。';
   $('branchWeightNote').textContent = modal
-    ? '区間の局所固有モードの変化からMueller行列を求め、Stokes強度をo/eへ分配します。複屈折による位相差を省いた前方2モード近似です。合計の重みは1ですが、実媒質の変換率の精度保証ではありません。'
+    ? '区間内の局所固有モードの変化からMueller行列を求め、Stokesベクトルで表した光の強度を常光線・異常光線へ分配します。複屈折による位相差を省いた前方2モードの近似です。分配後の重みの合計は1ですが、実在する媒質の変換率を正確に予測する保証はありません。'
     : layered
-      ? '接線方向の電場・磁場を接続してMueller行列を作り、Stokes強度から各枝の重みを求めます。反射も含めて合計1です。異なるモード・経路の位相関係は層ごとに捨てます。自然光が無偏光であることだけでは、この仮定は保証されません。'
+      ? '接線方向の電場・磁場が連続になる条件からMueller行列を求め、Stokesベクトルを用いて各光線の重みを計算します。反射光を含む重みの合計は1です。異なるモード・経路の位相関係は層ごとに無視します。この仮定は、入射光が無偏光であることだけからは導けません。'
       : '各枝の重みは親の50%です。同じ種類を続ける枝も含みます。';
   $('branchConditions').textContent = modal
-    ? '均質層への置換はしません。接線波数を保存して分配し、内部の反射枝は追加しません。実際の表面での反射・透過は従来どおり計算します。前回の分配点（最初は入口）から評価面までの変換を終端に集約し、その後は別の光線として強度を合成します。最後の評価面から出口までは同じモードです。zが単調で両方のモードが伝播する正則な区間が対象で、区間内のモードの空間的離隔や位相差を省きます。評価面の間隔を細かくすれば正しい変換率に収束するというモデルではありません。'
+    ? '均一層への置換はしません。接線波数を保存して分配し、内部の反射枝は追加しません。実際の表面での反射・透過は従来どおり計算します。前回の分配点（最初は入口）から評価面までの変換を終端に集約し、その後は別の光線として強度を合成します。最後の評価面から出口までは同じモードです。zが単調で両方のモードが伝播する正則な区間が対象で、区間内のモードの空間的離隔や位相差を省きます。評価面の間隔を細かくすれば正しい変換率に収束するというモデルではありません。'
     : layered
-      ? '層内は直線です。元の媒質の閉形式軌道・求積・ODEは使いません。面に平行な波数を保存し、o/eの透過と反射を追跡します。反射後は同じ境界にも再び到達できます。減衰する場は境界条件に含めますが、層間のエバネッセント結合は扱いません。層数を増やすだけで連続媒質の正解に収束する保証はありません。計算量の上限は1画素あたり2048枝で、超過分も打切り寄与に含めます。'
+      ? '層内は直線です。元の連続媒質に対する閉式解、数値求積、常微分方程式の数値積分は使いません。面に平行な波数を保存し、o/eの透過と反射を追跡します。反射後は同じ境界にも再び到達できます。減衰する場は境界条件に含めますが、層間のエバネッセント結合は扱いません。層数を増やすだけで連続媒質の正解に収束する保証はありません。計算量の上限は1画素あたり2048枝で、超過分も打ち切り寄与に含めます。'
       : '面に平行な波数を保存し、同じz方向へ進む根を選びます。この面での反射は計算しません。同じ面は1経路で一度だけ分岐します。伝播できない枝の重みは他方へ再配分しません。';
   $('depthNote').textContent = layered
     ? `層境界で最大${depth}回まで反射・透過を計算します。その次の層境界に達した光は打ち切り、失った寄与を画像下に表示します。表面での反射・屈折とは別の上限です。層を増やす際は、この回数も増やしてください。`
@@ -826,7 +827,7 @@ function syncBranches() {
     $('branchConditions').textContent =
       '4種のz依存一軸媒質の前方2モード近似です。両モードが伝播し、zが単調な正則区間が対象です。z折り返し・接線伝播・一般の縮退付近は条件外です。2013 axialは固定されたTE/TMを使用します。内部の後方結合、回折、別の往復経路間の干渉を含みません。光束分離と一般入射の界面分配には追加の近似があり、画像全体のMaxwell検証は未実施です。出口まで位相輸送します。';
     $('depthNote').textContent =
-      '光束の空間分離を1経路で最大' +
+      '一つの経路で、光束の分離を最大' +
       config.branchDepth +
       '回まで処理します。次に分離が必要になった光は打ち切り、その重みを結果に表示します。0でも位相輸送は計算します。表面での回数上限とは別です。';
   }
@@ -837,7 +838,7 @@ function updateSummary() {
   const shape = I18n.sourceText($('shape').selectedOptions[0]) || config.shape,
     material = I18n.sourceText($('material').selectedOptions[0]) || config.material;
   $('sceneSummary').textContent = shape + ' / ' + material + ' / 外部 n=' + config.outsideN;
-  const axisName = config.material === 'biaxial' ? '第3主軸' : '光学軸';
+  const axisName = config.material === 'biaxial' ? '第3主軸' : '光軸';
   $('angleSummary').textContent =
     '視点：水平角 ' +
     config.yaw +
@@ -897,7 +898,7 @@ function updateSummary() {
     }
   }
   if (layered) {
-    $('solutionForm').textContent = '計算中の媒質：有限の均質層による近似';
+    $('solutionForm').textContent = '計算中の媒質：有限の均一層による近似';
     $('solutionNote').textContent =
       '各層は直線。元の連続媒質の解析軌道は、このモードでは使いません。';
   }
@@ -917,7 +918,7 @@ function updateSummary() {
           : Optics.polarization.isotropicGradient(config)
             ? '偏光を輸送しながら曲線を追跡'
             : Optics.polarization.transformation(config)
-              ? '二偏光は同じ軌道'
+              ? '二つの偏光は同じ軌道'
               : '同じ種類の光線を追跡'
         : inside + (layered ? '（非干渉）' : modal ? '' : '（研究用の仮定）')) +
       ' → ' +
@@ -995,7 +996,7 @@ function initBranches() {
     dirty();
     $('exampleNotice').hidden = false;
     $('exampleNotice').textContent =
-      'Heliconicalの元の解析軌道を使います。光軸60°・視点0°、立方体、64 px。z=−0.5,0,0.5でモードに応じて分配（最大3回）。複屈折の位相差は省略。均質層への置換はしません。';
+      'Heliconicalの元の解析軌道を使います。光軸60°・視点0°、立方体、64 px。z=−0.5,0,0.5でモードに応じて分配（最大3回）。複屈折の位相差は省略。均一層への置換はしません。';
   };
   $('layerDemo').onclick = () => {
     stop();
@@ -1051,7 +1052,7 @@ function initBranches() {
     dirty();
     $('exampleNotice').hidden = false;
     $('exampleNotice').textContent =
-      '2013 axialの一軸実現：球、軸z固定・正面0°、64 px。表面は偏光分配、内部z=−0.5,+0.5で各0.5に分岐。最大2回。「レンダリング」で計算します。';
+      '2013 axialの一軸媒質モデル：球、軸z固定・正面0°、64 px。表面は偏光分配、内部z=−0.5,+0.5で各0.5に分岐。最大2回。「レンダリング」で計算します。';
   };
   $('moldedRealization').onclick = () => {
     stop();
@@ -1171,21 +1172,21 @@ function syncTransport() {
   $('transport').value = config.transport;
   $('transport').querySelector('option[value="polarized"]').disabled = !supported;
   $('transportGuide').textContent =
-    '材料モデルから自動設定します。誘電率・透磁率が定義されたモデルは表面の分配と偏光輸送を計算し、光学計量のみのモデルは透過像の位置を計算します。';
+    '媒質モデルから自動設定します。誘電率・透磁率が定義されたモデルは表面の分配と偏光輸送を計算し、光学計量のみのモデルは透過像の位置を計算します。';
   $('transportNote').textContent = physical
-    ? '像の位置に加え、表面での反射・屈折による光の分配を計算します。各経路の強さから、画像の色と明るさを合成します。'
+    ? '像の位置に加え、表面での反射・屈折による光の強度分配を計算します。各経路の強さから、画像の色と明るさを合成します。'
     : supported
       ? '選んだ透過光線を通して、背景がどの位置に見えるかを比べます。反射光と偏光による明るさの変化は計算しません。'
-      : 'この材料は軌道を調べるモデルで、現在は像の位置を比べる簡易計算のみ利用できます。';
+      : 'この媒質は軌道を調べるモデルで、現在は像の位置を比べる簡易計算のみ利用できます。';
   if (['axial2013', 'eng2013', 'molded2013', 'moldedApprox'].includes(config.material))
     $('transportNote').textContent +=
-      ' 誘電率・透磁率を補って明るさも計算する別モデルは、「形状と材料」欄で選べます。';
+      ' 誘電率・透磁率を補って明るさも計算する別モデルは、「形状と媒質」欄で選べます。';
   const split =
     Optics.branching.supported(config) && config.branchPolicy !== 'off' && config.branchDepth > 0;
   $('adiabaticNote').hidden =
     !physical || Optics.branching.homogeneous(config) || !Optics.polarization.varying(config);
   $('adiabaticNote').textContent = Optics.polarization.coherent.selected(config)
-    ? '波長と実寸から偏光の相対位相を計算します。元の閉形式軌道を保つ前方2モード近似で、光束の空間分離には別の近似を使います。'
+    ? '波長と実寸から偏光の相対位相を計算します。元の閉式解による軌道を保つ前方2モード近似で、光束の空間分離には別の近似を使います。'
     : modal
       ? '軌道は元の連続媒質の解、分配は位相差を省いた前方2モード近似です。解析解を使う範囲と、分配を近似する範囲を分けています。'
       : layered
@@ -1193,7 +1194,7 @@ function syncTransport() {
         : Optics.polarization.isotropicGradient(config)
           ? '内部では、曲がった光線に沿って偏光を連続的に輸送します。表面では、その位置の屈折率と到達した偏光から反射・透過の明るさを計算します。'
           : config.material === 'eng2013Magnetic'
-            ? '磁気異方性を追加した構成式で表面の分配を計算します。内部では伝播できる異常光線 eを追跡します。'
+            ? '磁気異方性を仮定した誘電率・透磁率から、界面での反射・透過率を計算します。媒質内では、伝播できる異常光線だけを追跡します。'
             : config.material === 'hyperbolic'
               ? '界面の計算には減衰する場も含めますが、内部を進む光線としては異常光線 eだけを追跡します。'
               : Optics.polarization.transformation(config)
@@ -1219,7 +1220,7 @@ function syncTransport() {
   $('modeDefinition').textContent = biax
     ? '二軸媒質の二つの固有偏光に対応する光線を、ここでは「光線1」「光線2」と呼びます。'
     : singleExtra
-      ? 'この材料では異常光線 eが伝播できます。常光線 oは伝播しません。'
+      ? 'この媒質では異常光線 eが伝播できます。常光線 oは伝播しません。'
       : '一軸媒質の偏光に対応する二種類の光線を、常光線 o（ordinary）・異常光線 e（extraordinary）と呼びます。';
   const views = [
     ['all', 'すべての光を合成（通常）'],
@@ -1289,9 +1290,7 @@ function adiabaticDemo(material) {
   dirty();
   $('exampleNotice').hidden = false;
   $('exampleNotice').textContent =
-    (material === 'common'
-      ? 'Common-scale：η=(1+0.18z)⁻²。'
-      : 'Heliconical：光学軸の回転率Ω=1.3。') +
+    (material === 'common' ? 'Common-scale：η=(1+0.18z)⁻²。' : 'Heliconical：光軸の回転率Ω=1.3。') +
     'z正側からの正面視です。断熱近似で内部で光線の種類を維持し、実際の表面で偏光依存の反射・透過を計算します。64 px・最大4界面。論文の図と同一条件ではありません。';
 }
 function initTransport() {
@@ -1387,7 +1386,7 @@ function initTransport() {
     dirty();
     $('exampleNotice').hidden = false;
     $('exampleNotice').textContent =
-      'GPU数値軌道例：Heliconical・立方体、光軸35°・水平12°（この例の設定）、64 px。閉式を優先し、一般入射の軌道はSchur求積、位相を含む偏光輸送は数値積分します。';
+      'GPU数値軌道例：Heliconical・立方体、光軸35°・水平12°（この例の設定）、64 px。閉式解を優先し、一般入射の軌道はSchur求積、位相を含む偏光輸送は数値積分します。';
   };
   $('gpuRKDemo').onclick = () => {
     stop();
@@ -1414,7 +1413,7 @@ function initTransport() {
     dirty();
     $('exampleNotice').hidden = false;
     $('exampleNotice').textContent =
-      'GPU RKF45例：2013 axialの一軸実現・球、g=0.2、正面0°、64 px。両モードをHamilton方程式の数値積分で追跡し、表面の反射・透過を計算します。';
+      'GPU RKF45例：2013 axialの一軸媒質モデル・球、g=0.2、正面0°、64 px。両モードをHamilton方程式の数値積分で追跡し、表面の反射・透過を計算します。';
   };
   for (const [id, phase] of [
     ['gpuPhaseDemo', true],
@@ -1457,7 +1456,7 @@ function initTransport() {
       $('exampleNotice').textContent =
         'GPU偏光例：Heliconical・立方体、光軸35°（この例の設定）、視点0°、64 px。' +
         (phase
-          ? '閉式軌道を優先して位相差を保持し、光束の重なりと実際の表面で分離します。'
+          ? '閉式解による軌道を優先して位相差を保持し、光束の重なりと実際の表面で分離します。'
           : 'z=−0.5,0,0.5で位相を省略するモード分配を計算します。') +
         ' 条件外の画素はCPUで再計算します。';
     };
@@ -1492,7 +1491,7 @@ function initTransport() {
         (preset === 'quadratic'
           ? 'Quadratic common-scale・球、g=0.2、光軸0°'
           : 'Coordinate-shear・球、shift=0.5') +
-        '、正面0°、64 px。閉式軌道と表面の反射・透過を計算します。閉式の条件外では数値軌道を使い、精度不足の場合はCPUで再計算します。';
+        '、正面0°、64 px。閉式解による軌道と表面の反射・透過を計算します。閉式解の条件外では数値軌道を使い、精度不足の場合はCPUで再計算します。';
     };
   $('gpuGrinDemo').onclick = () => {
     stop();
@@ -1517,7 +1516,7 @@ function initTransport() {
     dirty();
     $('exampleNotice').hidden = false;
     $('exampleNotice').textContent =
-      'GPU例：Radial gradient・球、n₀=1.5、g=0.3、正面0°、64 px。閉式軌道、曲線に沿う偏光輸送、表面での反射・透過を計算します。';
+      'GPU例：Radial gradient・球、n₀=1.5、g=0.3、正面0°、64 px。閉式解による軌道、曲線に沿う偏光輸送、表面での反射・透過を計算します。';
   };
   $('gpuBiaxialDemo').onclick = () => {
     stop();
@@ -1572,7 +1571,7 @@ function initTransport() {
     dirty();
     $('exampleNotice').hidden = false;
     $('exampleNotice').textContent =
-      'GPU検証例：Common-scaleの閉式軌道と断熱輸送、立方体、光軸35°／25°、水平12°、64 px。内部分岐・位相輸送は使わない条件です。レンダリングで計算します。';
+      'GPU検証例：Common-scaleの閉式解による軌道と断熱輸送、立方体、光軸35°／25°、水平12°、64 px。内部分岐・位相輸送は使わない条件です。レンダリングで計算します。';
   };
 
   $('grinDemo').onclick = () => {
@@ -1622,7 +1621,7 @@ function initTransport() {
     dirty();
     $('exampleNotice').hidden = false;
     $('exampleNotice').textContent =
-      'common-scale比較用：立方体、軸傾斜35°・方位25°、視点水平12°、64 px。正面平行板の特殊条件を避け、勾配による像位置と表面分配の変化を比較します。「軌道・材料の比較」タブで実行できます。';
+      'common-scale比較用：立方体、軸傾斜35°・方位25°、視点水平12°、64 px。正面平行板の特殊条件を避け、勾配による像位置と界面での強度分配の変化を比較します。「軌道・媒質の比較」タブで実行できます。';
   };
   $('biaxDemo').onclick = () => {
     stop();
@@ -1647,7 +1646,7 @@ function initTransport() {
     dirty();
     $('exampleNotice').hidden = false;
     $('exampleNotice').textContent =
-      'KTPの1064 nmの主屈折率を使う二軸均質の例です。二重像を比較するため、このデモでは傾き35°・方位角25°に設定しています。通常の材料選択では0°です。z正側の正面視、自然光（無偏光）を仮定、64 px。「レンダリング」で表示します。固有モード1・2の寄与を個別に確認できます。';
+      'KTPの1064 nmの主屈折率を使う均一二軸異方性の例です。二重像を比較するため、このデモでは傾き35°・方位角25°に設定しています。通常の媒質選択では0°です。z正側の正面視、自然光（無偏光）を仮定、64 px。「レンダリング」で表示します。固有モード1・2の寄与を個別に確認できます。';
   };
   $('commonDemo').onclick = () => adiabaticDemo('common');
   $('helicalDemo').onclick = () => adiabaticDemo('heliconical');
@@ -1694,7 +1693,7 @@ function initTransport() {
     dirty();
     $('exampleNotice').hidden = false;
     $('exampleNotice').textContent =
-      'Calciteを模した均質板の反射・透過例です。このデモは傾き35°・方位角25°。通常の材料選択では0°です。自然光（無偏光）を仮定、64 px。「レンダリング」で計算します。o/e寄与は個別に表示できます。';
+      'Calciteを模した均一板の反射・透過例です。このデモは傾き35°・方位角25°。通常の媒質選択では0°です。自然光（無偏光）を仮定、64 px。「レンダリング」で計算します。o/e寄与は個別に表示できます。';
   };
 }
 
@@ -1735,7 +1734,7 @@ function coherentDemo(split) {
   $('exampleNotice').textContent =
     '位相を含む偏光輸送：側面のない平行平板、光軸60°、正面0°。厚さ' +
     (split ? '2 mm、光束半径30 μm' : '20 μm、光束半径10 μm') +
-    '、波長550 nm。各モードは元の閉形式軌道を進みます。光束分離の回数上限は6回。';
+    '、波長550 nm。各モードは元の閉式解による軌道を進みます。光束分離の回数上限は6回。';
 }
 function syncCoherentFields() {
   const finite = config.shape !== 'slab';
@@ -1765,10 +1764,10 @@ function syncCoherentFields() {
     $('branchNote').textContent =
       '光束が十分重なる範囲に限定し、入口・内部・出口と反射後の偏光を接続します。条件外で従来方式へ自動的には切り替えません。';
     $('branchWeightNote').textContent =
-      '二本の解析軌道を共通光束の中点で代表させる追加近似です。内部の人工的な分岐は作らず、重なり条件を確認します。';
+      '二本の解析軌道の中点を共通光束の代表位置とする近似です。媒質内に分岐面を指定せず、光束の重なりを確認しながら追跡します。';
   }
   $('coherentInterfaceNote').textContent = finite
-    ? '有限形状：入口では局所法線からo/e光線を求め、内部の共通区間は位相を保持します。一方が表面に到達した時点で相関を捨て、各光線の位置・法線で反射と透過を計算します。z折り返しや対モードが使えない区間は単独モード近似とし、回数を表示します。'
+    ? '有限形状：入口では局所法線からo/e光線を求め、内部の共通区間は位相を保持します。一方が表面に到達した時点で相関を捨て、各光線の位置・法線で反射と透過を計算します。z折り返しやもう一方のモードが使えない区間は単独モード近似とし、回数を表示します。'
     : coupled
       ? (config.coherentInterface === 'coupled'
           ? '4媒質の斜入射に対応。光束が十分重なる条件で、入口・出口・反射後も相関を保持します。'

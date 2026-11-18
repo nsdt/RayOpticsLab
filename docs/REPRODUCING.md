@@ -5,7 +5,7 @@
 ## Choose the appropriate calculation
 
 Start the app with `python launch.py` from the repository root and open
-**Manuscript experiments**. This workspace has its own settings and canvas. It
+**Paper experiments**. This workspace has its own settings and canvas. It
 does not overwrite the scene in Custom rendering.
 
 The catalog has 80 conditions (76 monochromatic and 4 spectral). Experiment
@@ -13,22 +13,22 @@ selection follows Supplement Figures S2–S16, S18–S21 and S23. Representative
 also appear in the article. The 35 reference illustrations include trajectory,
 difference and quantitative figures as well as camera images.
 
-For a first check, select **Homogeneous isotropic**, choose a panel, select
-**Archived CPU reference**, then click **Calculate image**. This uses the retained
+For a first check, select **Homogeneous isotropic medium**, choose a panel, select
+**CPU reference used for the paper**, then click **Calculate image**. This uses the retained
 implementation and the original resolution. The status should report completed
 calculation and successful source/settings verification.
 
 The three modes serve different purposes:
 
-- **Manuscript experiment — GPU preferred** preserves the physical scene, panel
+- **Paper settings (GPU preferred)** preserves the physical scene, panel
   resolution and wavelength sampling. The backend can be switched to CPU.
-- **Archived CPU reference** restores the original implementation, tolerances,
+- **CPU reference used for the paper** restores the original implementation, tolerances,
   resolution and sampling together. Use it when comparing with retained CPU data.
 - **Adjust calculation settings** permits a different backend, side length
   (4–1024 pixels) and spectral sample count (8, 16, 32, 64, 128 or 256). Material,
   lens, camera and background parameters remain those of the selected experiment.
 
-Use **Restore all manuscript settings** to return from adjusted settings to the
+Use **Restore paper settings** to return from adjusted settings to the
 manuscript mode. Resolution and wavelength sampling also have individual restore
 buttons. The default mode again prefers GPU.
 

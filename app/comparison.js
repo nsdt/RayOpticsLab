@@ -2,7 +2,7 @@
 (function (root) {
   const $ = (id) => document.getElementById(id),
     labels = {
-      auto: '閉形式を優先（条件外は求積・ODE）',
+      auto: '閉式解を優先（条件外は求積・ODE）',
       schur: '積分表示の数値求積を優先',
       rkf45: 'Hamilton方程式のRKF45',
     };
@@ -28,7 +28,7 @@
     $('comparisonSave').disabled = !report || !report.complete;
     $('comparisonHint').textContent = ok
       ? '現在の形状・配向・観察・背景・寄与表示を固定して比較します。画像の明るさは再正規化しません。まず64 pxを推奨します。'
-      : 'Common-scaleの逆二乗／二次scaleが対象です。下の実験プリセットから条件を読み込めます。位相輸送・層近似を使う設定は、この比較の対象外です。';
+      : '共通スケールの逆二乗型・二次型モデルが対象です。下の設定例から条件を読み込めます。位相を含む偏光輸送や層近似を使う設定は、この比較の対象外です。';
   }
   function cancel() {
     if (!active) return;
@@ -129,11 +129,11 @@
         const s = r.stats,
           e = s.evaluations,
           n = s.budgetPixels || c.resolution ** 2;
-        metrics.textContent = `内部分岐 ${s.internalBranches || 0}回 / 最大深さ ${s.maxInternalDepth || 0} · 非伝播寄与 ${((100 * (s.unavailableWeight || 0)) / n).toFixed(4)}% · ${(r.ms / 1000).toFixed(2)}秒 · 条件外 ${s.error} · 失敗寄与 ${((100 * s.failedWeight) / n).toFixed(4)}% · 打切り 平均 ${((100 * s.dropped) / n).toFixed(3)}% / 最大 ${(100 * s.maxDropped).toFixed(3)}% · 界面収支誤差 ${s.fluxError.toExponential(1)} · 閉形式 ${e.closed} / 求積 ${e.quadrature} / ODE ${e.ode}`;
+        metrics.textContent = `内部分岐 ${s.internalBranches || 0}回 / 最大深さ ${s.maxInternalDepth || 0} · 非伝播寄与 ${((100 * (s.unavailableWeight || 0)) / n).toFixed(4)}% · ${(r.ms / 1000).toFixed(2)}秒 · 条件外 ${s.error} · 失敗寄与 ${((100 * s.failedWeight) / n).toFixed(4)}% · 打ち切り 平均 ${((100 * s.dropped) / n).toFixed(3)}% / 最大 ${(100 * s.maxDropped).toFixed(3)}% · 界面収支誤差 ${s.fluxError.toExponential(1)} · 閉式解 ${e.closed} / 求積 ${e.quadrature} / ODE ${e.ode}`;
         metrics.textContent +=
           ' 未追跡の許容量超過・計算失敗 ' +
           (s.overBudgetPixels || 0) +
-          '画素、最大未解決 ' +
+          '画素、未評価の重みの最大値 ' +
           (100 * (s.maxUnresolvedWeight || 0)).toFixed(3) +
           '%。処理数上限による省略（全画素平均） ' +
           ((100 * (s.cutoffWeights?.work || 0)) / n).toFixed(3) +
@@ -142,7 +142,7 @@
           const warning = document.createElement('p');
           warning.className = 'hint';
           warning.textContent =
-            '一部の画素に1%を超える打切り寄与があります。最大界面回数を増やした比較が必要です。';
+            '一部の画素に1%を超える打ち切り寄与があります。最大界面回数を増やした比較が必要です。';
           card.insertBefore(warning, diff);
         }
         load.disabled = false;
@@ -171,7 +171,7 @@
         ? [0, 1 / 3, 2 / 3, 1].map((f) => ({
             label:
               f === 0
-                ? 'g = 0（均質極限）'
+                ? 'g = 0（均一極限）'
                 : 'g = ' + Number((original.gradient * f).toPrecision(5)),
             config: { ...original, gradient: original.gradient * f },
           }))
@@ -192,7 +192,7 @@
           ];
     try {
       if (kind === 'gradient' && Math.abs(original.gradient) < 1e-12)
-        throw Error('勾配比較には、材料パラメータのgを0以外に設定してください。');
+        throw Error('勾配比較には、媒質パラメータのgを0以外に設定してください。');
       cases.forEach((x) => root.Optics.polarization.validate(x.config));
     } catch (e) {
       $('comparisonStatus').textContent = e.message;
@@ -234,7 +234,7 @@
     $('comparisonConditions').textContent += branches.planes.length
       ? (original.branchModel === 'modal'
           ? ' 内部は位相差を省いた前方モード分配：z='
-          : ' 内部は指定面で各0.5の仮定分岐：z=') +
+          : ' 内部は指定面で各0.5の分配率を仮定した分岐：z=') +
         branches.planes.join(',') +
         '、最大深さ' +
         branches.branchDepth +
@@ -242,7 +242,7 @@
       : ' 内部で光線の種類を切り替えません。';
     $('comparisonScope').textContent =
       kind === 'gradient'
-        ? '0から現在のgまで4条件を計算します。nₒ₀・nₑ₀を固定するので、勾配を変えると表面の屈折率・反射透過率も変わります。画像の差には内部軌道と表面分配の両方が含まれます。'
+        ? '0から現在のgまで4条件を計算します。nₒ₀・nₑ₀を固定するので、勾配を変えると表面の屈折率・反射透過率も変わります。画像の差には内部軌道と界面での強度分配の両方が含まれます。'
         : '同じ媒質・同じ界面分配を使います。自動計算を比較基準とし、全画素の線形RGBのRMSEと最大差を表示します。これは計算法間の差で、物理モデルの正確さを保証しません。RKF45同士の許容誤差変更による差も表示します。';
     if (Spectral.enabled(original))
       $('comparisonConditions').textContent +=

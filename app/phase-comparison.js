@@ -8,7 +8,7 @@
       common: 'Common-scale / reciprocal',
       quadratic: 'Common-scale / quadratic',
       heliconical: 'Heliconical',
-      axial2013Uniaxial: '2013 axialの一軸実現',
+      axial2013Uniaxial: '2013 axialの一軸媒質モデル',
     };
   let api,
     worker = null,
@@ -61,7 +61,7 @@
       if (kind === 'accuracy')
         return [
           {
-            label: 'A：閉形式を優先',
+            label: 'A：閉式解を優先',
             note: '曲線軌道と局所表面を計算。',
             config: { ...base, solver: 'auto' },
           },
@@ -132,8 +132,8 @@
     if (kind === 'accuracy')
       return [
         {
-          label: 'A：閉形式を優先',
-          note: '閉形式の条件外はSchur求積。界面は相関保持。',
+          label: 'A：閉式解を優先',
+          note: '閉式解の条件外はSchur求積。界面は相関保持。',
           config: { ...base, coherentInterface: 'coupled', solver: 'auto' },
         },
         {
@@ -196,7 +196,7 @@
       ok && finite
         ? '現在の媒質・視点・背景で比較します。有限形状では現在の最大界面回数を使用し、内部反射とトーラスへの再入射も追跡します。'
         : ok
-          ? '現在の材料・視点・背景を使用します。比較では全光表示、入口＋出口の2面、一回通過、共通露光に固定します。出口から内部へ反射した光は追跡せず、未追跡寄与として記録します。'
+          ? '現在の媒質・視点・背景を使用します。比較では、入口と出口を一回ずつ通過する条件にそろえ、すべての光を同じ露光条件で合成します。出口から内部へ反射した光は追跡せず、未追跡寄与として記録します。'
           : '比較には、4種のz依存一軸媒質・位相を含む連続輸送を選んでください。';
     $('phaseCompareStale').hidden =
       !report || JSON.stringify(c) === JSON.stringify(report.sourceConfig);
@@ -328,7 +328,7 @@
         rejectPending = null;
         const s = r.stats;
         metrics.textContent =
-          `条件外 ${s.error}画素。軌道：閉形式 ${s.evaluations.closed}／求積 ${s.evaluations.quadrature}／ODE ${s.evaluations.ode}。偏光積分の誤差目安 ${fmt(s.phaseIntegrationError || 0)}。` +
+          `条件外 ${s.error}画素。軌道：閉式解 ${s.evaluations.closed}／求積 ${s.evaluations.quadrature}／ODE ${s.evaluations.ode}。偏光積分の誤差目安 ${fmt(s.phaseIntegrationError || 0)}。` +
           (c.coherentInterface.startsWith('coupled')
             ? ' 最小光束重なり ' + (s.phaseMinOverlap ?? 1).toPrecision(6) + '。'
             : ' 光束分離 ' + (s.coherentSplits || 0) + '回。') +
@@ -337,7 +337,7 @@
           metrics.textContent +=
             ' 表面接触による分離 ' +
             (s.phaseBoundaryProjections || 0) +
-            '回／単独モードへの近似 ' +
+            '回／単独モードでの近似 ' +
             (s.phaseAdiabaticSegments || 0) +
             '区間／再入射 ' +
             (s.phaseReentries || 0) +
@@ -345,9 +345,9 @@
         metrics.textContent +=
           ' 許容量超過・計算失敗 ' +
           (s.overBudgetPixels || 0) +
-          '画素、最大未解決 ' +
+          '画素、未評価の重みの最大値 ' +
           pct(s.maxUnresolvedWeight || 0) +
-          '。打切り内訳（全画素平均）：' +
+          '。打ち切り内訳（全画素平均）：' +
           Object.entries({
             threshold: '微小光',
             interface: '表面上限',
@@ -467,7 +467,7 @@
         ? 'AとBは同じ共通光束の位置を使用し、表面で相関を捨てる影響を比較します。Cは従来の二本の光線で、空間的な扱いも異なります。共通光束では二本の軌道の中点に像を代表させる追加近似があり、細かな背景の二重像を正確に予測する保証はありません。'
         : kind === 'accuracy'
           ? '同じ物理モデルで軌道と偏光積分の数値精度を確認します。Aとの差は計算法間の差で、物理モデルの誤差ではありません。'
-          : '光束の分離条件を変えたモデル感度です。変化がなければ、この条件では分離判定が像に影響していない可能性があります。幅や閾値を小さくしても波動光学の正解へ収束するとは限りません。';
+          : '光束の分離条件を変えたときに、像がどの程度変化するかを調べます。像に変化がなければ、その条件では分離判定が結果に影響していない可能性があります。光束幅や閾値を小さくしても、波動光学の解に収束するとは限りません。';
     if (original.shape !== 'slab') {
       report.conditions =
         'Finite boundary, local eigenray interfaces; current interface limit; external re-entry enabled. Common-z phase transport ends at first boundary contact. Adiabatic fallback is counted.';
@@ -490,7 +490,7 @@
         Spectral.description(original) +
         '。上記の単色波長に代えて各サンプル波長を使用します。中央Stokesは波長ごとに記録し、ここでは平均しません。';
       $('phasePowerNote').textContent +=
-        ' スペクトル時のT・R・打切りは画素と波長の単純平均です。画像の色はD65・等色関数で積分します。件数は画素×波長です。';
+        ' スペクトル時のT・R・打ち切りは画素と波長の単純平均です。画像の色はD65・等色関数で積分します。件数は画素×波長です。';
     }
     sync(original);
     root.WorkspaceUI?.show('polarization');

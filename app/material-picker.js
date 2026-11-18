@@ -44,7 +44,7 @@
       const current = presets.find((p) => p.id === c.preset);
       if (current) {
         const group = document.createElement('optgroup');
-        group.label = '現在の材料（検索結果とは別）';
+        group.label = '現在の媒質（検索結果とは別）';
         group.append(new Option(current.label, current.id));
         select.append(group);
       }
@@ -52,7 +52,7 @@
     select.value = c.preset;
     $('presetMatches').textContent = query
       ? matching.length
-        ? matching.length + '件の候補。選択するまで材料は変わりません。'
+        ? matching.length + '件の候補。選択するまで媒質は変わりません。'
         : '一致する候補がありません。検索語を変えてください。'
       : '';
     $('presetMatches').hidden = !query;
@@ -63,7 +63,7 @@
     const search = document.createElement('div');
     search.className = 'preset-search';
     const label = document.createElement('label');
-    label.textContent = '材料プリセットを検索';
+    label.textContent = '媒質のプリセットを検索';
     const input = document.createElement('input');
     input.type = 'search';
     input.id = 'presetSearch';

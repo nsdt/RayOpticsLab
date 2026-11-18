@@ -11,39 +11,39 @@
   const models = {
     radialAnisotropic: {
       type: 'aniGradient',
-      label: 'Gibbons–Warnick：放射状光学軸',
-      form: 'extraordinaryは直線の閉形式／ordinaryはRKF45',
+      label: 'Gibbons–Warnick：放射状光軸',
+      form: '異常光線：直線の閉式解／常光線：RKF45',
       params: ['radialRadius'],
     },
     sphericalTransform: {
       type: 'aniGradient',
-      label: '球面座標変換媒質の切り出し',
-      form: '閉形式（逆座標写像）',
+      label: '球対称の座標変換媒質（一部を切り出した形状）',
+      form: '閉式解（逆座標写像）',
       params: ['transformInner', 'transformOuter'],
     },
     cylindricalTransform: {
       type: 'aniGradient',
-      label: '円柱座標変換媒質の切り出し',
-      form: '閉形式（逆座標写像）',
+      label: '円柱対称の座標変換媒質（一部を切り出した形状）',
+      form: '閉式解（逆座標写像）',
       params: ['transformInner', 'transformOuter'],
     },
-    isotropic: { type: 'isoUniform', label: '一定の屈折率', form: '閉形式（直線）', params: ['n'] },
+    isotropic: { type: 'isoUniform', label: '一定の屈折率', form: '閉式解（直線）', params: ['n'] },
     sphericalSquared: {
       type: 'isoGradient',
       label: '球対称：n² = n₀² − g r²（Luneburg型）',
-      form: '閉形式',
+      form: '閉式解',
       params: ['n', 'gradient'],
     },
     radialSquared: {
       type: 'isoGradient',
-      label: 'Radial gradient（円柱対称）：n² = n₀² − gρ²',
-      form: '閉形式',
+      label: '円柱対称：n² = n₀² − gρ²（Radial gradient）',
+      form: '閉式解',
       params: ['n', 'gradient'],
     },
     axialSquared: {
       type: 'isoGradient',
       label: '軸方向：n² = n₀² + g z',
-      form: '閉形式',
+      form: '閉式解',
       params: ['n', 'gradient'],
     },
     radial: {
@@ -61,85 +61,85 @@
     uniaxial: {
       type: 'aniUniform',
       label: '一軸結晶',
-      form: '閉形式（直線）',
+      form: '閉式解（直線）',
       params: ['no', 'ne', 'tilt', 'azimuth'],
     },
     biaxial: {
       type: 'aniUniform',
-      label: '二軸結晶・Maxwell Fresnel二根',
-      form: '閉形式（直線）／界面根は数値探索',
+      label: '二軸結晶（Fresnelの分散関係の二つの解）',
+      form: '閉式解（直線）／界面での波数は数値的に求めます',
       params: ['nx', 'ny', 'nz', 'tilt', 'azimuth', 'roll'],
     },
     axial2013Uniaxial: {
       type: 'aniGradient',
-      label: '2013 axial：一軸媒質としての実現（o/e）',
-      form: 'extraordinaryは閉形式／ordinaryは数値求積・ODE',
+      label: '2013 axial：一軸媒質モデル（常光線・異常光線）',
+      form: '異常光線：閉式解／常光線：数値求積・常微分方程式の数値積分',
       params: ['gradient'],
     },
     axial2013: {
       type: 'aniGradient',
-      label: 'Nishidate 2013：axial diagonal metric',
-      form: '閉形式',
+      label: 'Nishidate 2013：軸方向の対角計量（axial）',
+      form: '閉式解',
       params: ['gradient'],
     },
     eng2013Magnetic: {
       type: 'aniGradient',
-      label: '2013 ENG：磁気異方性を加えた実現（extraordinary）',
-      form: '条件付き閉形式／一般光線は数値求積・ODE',
+      label: '2013 ENG：磁気異方性を仮定したモデル（異常光線）',
+      form: '条件付き閉式解／一般光線は数値求積・ODE',
       params: ['engStrength'],
     },
     eng2013: {
       type: 'aniGradient',
-      label: 'Nishidate 2013：ENG meridional',
-      form: '条件付き閉形式／一般光線は数値求積',
+      label: 'Nishidate 2013：負の誘電率を含む媒質（ENG）',
+      form: '条件付き閉式解／一般光線は数値求積',
       params: ['engStrength'],
     },
     common: {
       type: 'aniGradient',
-      label: 'Common-scale：reciprocal',
-      form: '条件付き閉形式',
+      label: '共通スケール：逆二乗型（Common-scale）',
+      form: '条件付き閉式解',
       params: ['no', 'ne', 'gradient', 'tilt', 'azimuth'],
     },
     quadratic: {
       type: 'aniGradient',
-      label: 'Common-scale：quadratic',
-      form: '条件付き閉形式',
+      label: '共通スケール：二次型（Common-scale）',
+      form: '条件付き閉式解',
       params: ['no', 'ne', 'gradient', 'tilt', 'azimuth'],
     },
     hyperbolic: {
       type: 'aniGradient',
-      label: 'Hyperbolic：linear scale',
-      form: '条件付き閉形式',
+      label: '双曲型媒質：線形スケール（Hyperbolic）',
+      form: '条件付き閉式解',
       params: ['no', 'ne', 'gradient', 'tilt', 'azimuth'],
     },
     heliconical: {
       type: 'aniGradient',
-      label: 'Helical / heliconical axis',
-      form: '一般光線は積分表示／横運動量ゼロで閉形式',
+      label: '螺旋状・螺旋円錐状の光軸（Helical / heliconical）',
+      form: '一般光線は積分表示／横運動量ゼロで閉式解',
       params: ['no', 'ne', 'tilt', 'azimuth', 'twist'],
     },
     shear: {
       type: 'aniGradient',
-      label: 'Coordinate-shear変換媒質',
-      form: '閉形式',
+      label: '座標のせん断変換による媒質（Coordinate-shear）',
+      form: '閉式解',
       params: ['shift'],
     },
     molded2013Transform: {
       type: 'aniGradient',
-      label: '2013 molded：変換媒質としての実現（非複屈折）',
-      form: 'ODE数値積分（small-slopeを使わない）',
+      label: '2013 molded：変換媒質モデル（複屈折なし）',
+      form: '常微分方程式の数値積分（小傾斜近似なし）',
       params: ['n', 'gradient'],
     },
     molded2013: {
       type: 'aniGradient',
-      label: 'Nishidate 2013：molded metric',
+      label: 'Nishidate 2013：成形媒質の計量（molded）',
       form: 'ODE数値積分',
       params: ['n', 'gradient'],
     },
     moldedApprox: {
       type: 'aniGradient',
-      label: 'Nishidate 2013：molded small-slope近似',
-      form: '近似方程式の閉形式',
+      label: 'Nishidate 2013：moldedの小傾斜近似',
+      form: '近似方程式の閉式解',
       params: ['n', 'gradient'],
     },
   };
@@ -203,7 +203,7 @@
     '異方性・均一：結晶',
     { material: 'uniaxial', no: 1.6557, ne: 1.4852 },
     'https://www.cm-optics.com/Calcite.html',
-    '負の一軸結晶。メーカー表の630 nmの値。軸方向はアプリ用初期値です。',
+    '負の一軸結晶です。メーカーが掲載する630 nmでの屈折率を使います。光軸の向きは、このアプリの初期設定です。',
   );
   for (const [id, label, no, ne] of [
     ['bbo', 'BBO · 532 nm', 1.675, 1.5555],
@@ -216,7 +216,7 @@
       '異方性・均一：結晶',
       { material: 'uniaxial', no, ne },
       eksma,
-      'メーカー掲載の指定波長の主屈折率。軸方向はアプリ用初期値です。',
+      'メーカーが掲載する指定波長での主屈折率を使います。主軸の向きは、このアプリの初期設定です。',
     );
   for (const [id, label, nx, ny, nz] of [
     ['lbo', 'LBO · 532 nm', 1.5785, 1.6065, 1.6212],
@@ -229,28 +229,28 @@
       '異方性・均一：結晶',
       { material: 'biaxial', nx, ny, nz },
       eksma,
-      'メーカー掲載の指定波長の主屈折率。二つのFresnel modeを扱います。',
+      'メーカーが掲載する指定波長での主屈折率を使い、Fresnelの分散関係に対応する二つのモードを追跡します。',
     );
   add(
     'positive',
-    '一軸正・理想モデル',
+    '正の一軸結晶（理想モデル）',
     '異方性・均一：理想モデル',
     { material: 'uniaxial', no: 1.5, ne: 1.7 },
     null,
-    '特定の実在結晶に対応しない理想パラメータです。',
+    '特定の実在結晶を想定せず、主屈折率を設定した理想モデルです。',
   );
   add(
     'luneburg',
     'Luneburg · n²=2−r²（半径1の球）',
-    '等方性・不均一：閉形式',
+    '等方性・不均一：閉式解',
     { material: 'sphericalSquared', n: Math.SQRT2, gradient: 1 },
     grin,
-    '標準形は半径1の球、外部屈折率1。形状と外部屈折率は別途設定します。r²<2の有効領域で、三次元軌道を閉形式評価。',
+    '標準的なLuneburgレンズの条件は、半径1の球、外部屈折率1です。形状と外部屈折率は別途設定してください。r²<2の範囲で、閉式解により三次元の光線軌道を計算します。',
   );
   add(
     'parabolic',
     'Radial gradient（Marchand）· n²=n₀²−gρ²',
-    '等方性・不均一：閉形式',
+    '等方性・不均一：閉式解',
     { material: 'radialSquared', n: 1.5, gradient: 0.3 },
     marchand,
     'Marchand (1978) §5.1・§5.3、pp.53, 59–61。ρ²=x²+y²はz軸からの距離の二乗。式(5.34)の n²=N₀²±b²ρ² に対応します。g>0は負符号（g=b²）、g<0は正符号です。光線軌道は近軸近似を使わず評価します。n₀=1.5、g=0.3はアプリ用設定です。',
@@ -258,10 +258,10 @@
   add(
     'linearSquared',
     'Axial · n²=n₀²+gz',
-    '等方性・不均一：閉形式',
+    '等方性・不均一：閉式解',
     { material: 'axialSquared', n: 1.5, gradient: 0.3 },
     grin,
-    '文献の軸・符号をzとgへ変更した二乗屈折率の線形分布。数値条件はアプリ用です。',
+    '屈折率の二乗が軸方向に線形に変化する分布です。文献の座標軸と符号を、このアプリのzとgに合わせています。数値条件はアプリ用の設定です。',
   );
   add(
     'axial2013Uniaxial',
@@ -269,7 +269,7 @@
     '異方性・不均一：2013年・現行原稿',
     { material: 'axial2013Uniaxial', gradient: 0.2 },
     nishidate,
-    'アプリで構成した一軸実現。b=1+g sin z、ε=diag(b²,b²,1)、μ=1。extraordinaryの計量が2013 axialと一致し、ordinaryの計量はb²I。原典が分配率を与えるという意味ではありません。光学軸はz固定。',
+    '2013 axialの計量に対応する一軸媒質モデルです。b=1+g sin z、ε=diag(b²,b²,1)、μ=1とします。異常光線の計量は2013 axialと一致し、常光線の計量はb²Iとなります。界面での反射・透過率は、この追加の仮定から計算します。光軸はz方向に固定します。',
   );
   add(
     'eng2013Magnetic',
@@ -277,7 +277,7 @@
     '異方性・不均一：2013年・現行原稿',
     { material: 'eng2013Magnetic' },
     nishidate,
-    'アプリの追加仮定：a=1+gENG z²（初期値gENG=1）、ε=diag(−a/2,a/2,−2a)、μ=diag(1/2,1/2,2)。元のENG計量がextraordinaryの分散面になる。ordinaryは非伝播。元論文の材料と同じ構成式であるという意味ではありません。',
+    'このアプリでは、a=1+gENG z²（初期値gENG=1）、ε=diag(−a/2,a/2,−2a)、μ=diag(1/2,1/2,2)を仮定します。異常光線の計量が元のENG計量と一致し、常光線は伝播しません。原典とは異なる誘電率・透磁率の設定です。',
   );
   for (const m of ['axial2013', 'eng2013'])
     add(
@@ -299,11 +299,11 @@
     );
   add(
     'helical',
-    'Gibbons–Warnick：helical axis（積分表示）',
+    'Gibbons–Warnick：螺旋状の光軸（積分表示）',
     '異方性・不均一：2013年・現行原稿',
     { material: 'heliconical', tilt: 90 },
     'https://doi.org/10.1103/PhysRevE.84.031709',
-    '光学軸がzに垂直な面内で回転するモデル。一般の光線には数値求積。数値条件はアプリ用です。',
+    '光軸がz方向に沿って回転し、常にz軸に垂直な面内を向くモデルです。一般の光線には数値求積を使います。数値条件はアプリ用の設定です。',
   );
   add(
     'molded2013Transform',
@@ -311,7 +311,7 @@
     '異方性・不均一：2013年・現行原稿',
     { material: 'molded2013Transform', n: 1.5, gradient: 0.2 },
     nishidate,
-    '元のmolded計量Gをε=μ=√det(G) G⁻¹で実現するアプリの仮定。電気と磁気の異方性を持つ変換媒質で、通常の成形ガラスを意味しません。二偏光の軌道は一致。表面の反射・透過と偏光の輸送を計算します。',
+    '元のmolded計量Gに対応するよう、ε=μ=√det(G) G⁻¹としたモデルです。誘電率と透磁率の両方に異方性をもつ変換媒質で、通常の成形ガラスを表すものではありません。二つの偏光の軌道は一致します。界面での反射・透過と、軌道に沿った偏光の輸送を計算します。',
   );
   for (const m of ['moldedApprox', 'molded2013'])
     add(
@@ -320,7 +320,7 @@
       '比較用：近似・数値積分',
       { material: m, n: 1.5, gradient: 0.2 },
       nishidate,
-      'small-slope近似と元の計量のODE積分を分けて比較します。',
+      '小傾斜近似と元の計量のODE積分を分けて比較します。',
     );
   for (const m of ['radialAnisotropic', 'sphericalTransform', 'cylindricalTransform'])
     add(
@@ -331,7 +331,7 @@
       m === 'radialAnisotropic'
         ? 'https://doi.org/10.1103/PhysRevE.84.031709'
         : 'https://arxiv.org/abs/1109.5133',
-      '原典の媒質を平行移動・尺度変更して有限形状内に配置。放射状光学軸は中心(2,1,−3)、半径尺度7。座標変換は中心(0.7,0,−3)、内半径0.7、外半径5、円柱軸はy。変換媒質は電気・磁気の異方性を持ち、切り出し後の物体は完全クロークではありません。',
+      '文献の媒質分布の中心位置と長さの尺度を変え、選択した形状の内部に配置します。放射状光軸のモデルでは中心(2,1,−3)、半径の尺度7、座標変換モデルでは中心(0.7,0,−3)、内半径0.7、外半径5を使います。円柱の軸はy方向です。変換媒質には誘電率・透磁率の両方の異方性がありますが、一部を切り出したこの形状は完全なクローキング装置にはなりません。',
     );
   const orientationKeys = ['tilt', 'azimuth', 'roll'];
   const materialKeys = [

@@ -41,7 +41,7 @@
     group.className = 'settings-group';
     group.open = true;
     group.innerHTML =
-      '<summary>3. 光源と分散</summary><div class="group-body"><label>色の計算<select id="spectralMode"><option value="off">単色の材料係数（従来のRGB背景）</option><option value="on">複数波長で分散を計算（D65光源）</option></select></label><div id="spectralControls"><label>材料の分散式<select id="spectralModel"></select></label><p id="spectralSource" class="spectral-note"></p><div class="row">' +
+      '<summary>3. 光源と分散</summary><div class="group-body"><label>色の計算<select id="spectralMode"><option value="off">単色の物性値で計算（RGB背景）</option><option value="on">複数波長で分散を計算（D65光源）</option></select></label><div id="spectralControls"><label>媒質の分散式<select id="spectralModel"></select></label><p id="spectralSource" class="spectral-note"></p><div class="row">' +
       number('spectralMin', '短波長端 (nm)', 380, 770, 1) +
       number('spectralMax', '長波長端 (nm)', 390, 780, 1) +
       '</div><label>追跡する波長数<select id="spectralSamples">' +
@@ -57,7 +57,7 @@
             '</option>',
         )
         .join('') +
-      '</select></label><label>スペクトル背景<select id="spectralBackground"><option value="checker">白・濃いグレーのチェック</option><option value="landmarks">U/D/L/Rの目印（定義した反射スペクトル）</option><option value="smooth">滑らかな白黒パターン（収束確認）</option><option value="white">一様な白（強度確認）</option></select></label><div id="cauchyFields"><p id="cauchyEquation" class="spectral-note">nⱼ(λ) = nⱼ(λref) + Bⱼ (1/λ² − 1/λref²)。λはμm。材料パラメータ欄の屈折率を基準値として使います。</p><div id="cauchyIndices"></div></div><details><summary>基準波長・外部媒質の分散</summary>' +
+      '</select></label><label>スペクトル背景<select id="spectralBackground"><option value="checker">白・濃いグレーのチェック</option><option value="landmarks">U/D/L/Rの目印（反射スペクトルを指定）</option><option value="smooth">滑らかな白黒パターン（収束確認）</option><option value="white">一様な白（強度確認）</option></select></label><div id="cauchyFields"><p id="cauchyEquation" class="spectral-note">nⱼ(λ) = nⱼ(λref) + Bⱼ (1/λ² − 1/λref²)。λはμm。媒質パラメータ欄の屈折率を基準値として使います。</p><div id="cauchyIndices"></div></div><details><summary>基準波長・外部媒質の分散</summary>' +
       number('spectralReference', 'Cauchy近似の基準波長 (nm)', 380, 1100, 0.1) +
       number('cauchyOutside', '外部 B (μm²、0なら分散なし)', -0.2, 0.2, 0.0001) +
       '<p class="spectral-note">外部屈折率の設定値を基準波長での値とします。</p></details><p id="spectralModelNote" class="spectral-note"></p><p id="spectralError" role="status"></p><p id="spectralSamplingNote" class="spectral-note">波長数を増やして収束を確認してください。特に位相差が大きい場合、32波長で十分とは限りません。</p><a href="help.html#spectral" target="_blank">計算方法・データの出典</a></div></div>';
@@ -88,7 +88,7 @@
     );
     ContextHelp.fieldHelp(
       'spectralReference',
-      'Cauchy近似では、材料・外部の屈折率設定値をこの基準波長での値として扱います。メーカー分散式の基準を変える設定ではありません。',
+      'Cauchy近似では、媒質・外部の屈折率設定値をこの基準波長での値として扱います。メーカー分散式の基準を変える設定ではありません。',
     );
     const link = document.createElement('button');
     link.id = 'spectralDemo';
@@ -102,7 +102,7 @@
     for (const [k, v] of Object.entries(Spectral.defaults)) c[k] ??= v;
     const select = $('spectralModel'),
       items = [
-        ['auto', '材料プリセットの分散データ'],
+        ['auto', '媒質プリセットの分散データ'],
         ['cauchy', '任意のCauchy近似（仮定モデル）'],
         ['constant', '屈折率の分散なし（比較用）'],
         ...Object.entries(Spectral.datasets)
@@ -110,7 +110,7 @@
           .map(([id, v]) => [id, v.label]),
       ];
     if (!items.some(([id]) => id === c.spectralModel))
-      items.push([c.spectralModel, '現在の材料に適合しない分散式']);
+      items.push([c.spectralModel, '現在の媒質に適合しない分散式']);
     select.replaceChildren(...items.map(([id, label]) => new Option(label, id)));
     for (const k of Object.keys(Spectral.defaults)) $(k).value = c[k];
     const on = Spectral.enabled(c),
@@ -163,7 +163,7 @@
       $('spectralSource').textContent = custom
         ? '測定値ではなく、指定した係数による仮定の分散です。'
         : c.spectralModel === 'constant'
-          ? '材料係数を全波長で固定します。位相を含む方式では位相差のみ波長とともに変わります。'
+          ? '物性値を全波長で固定します。位相を含む方式では位相差のみ波長とともに変わります。'
           : 'このプリセットには分散データがありません。分散式を選んでください。';
     $('spectralModelNote').textContent =
       Optics.polarization.varying(c) || Optics.polarization.isotropicGradient(c)
@@ -171,7 +171,7 @@
         : '吸収・非線形応答・別経路間の画像干渉・回折は含みません。画面表示ではsRGBの範囲外をクリップします。';
     if (Spectral.family(c) === 'signed')
       $('spectralModelNote').textContent +=
-        ' HyperbolicのCauchy近似は符号付き構成式の大きさへの仮定です。実在の受動媒質の分散を保証しません。';
+        ' 双曲型媒質のCauchy近似では、誘電率の符号を保ち、その大きさに波長依存性を与えます。実在する受動媒質の分散を再現する保証はありません。';
     $('spectralError').textContent = '';
     if (on)
       try {

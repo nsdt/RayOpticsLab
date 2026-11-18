@@ -29,7 +29,7 @@
         '位相を含む連続輸送は、Heliconical・平行平板（側面なし）・平行投影・視点0°で使用できます。専用デモで設定できます。',
       );
     if (!(c.tilt > 1e-3 && c.tilt <= 90) || Math.abs(c.no - c.ne) < 1e-7)
-      throw Error('位相輸送には、光学軸の傾きと二つの屈折率の差が必要です（縮退は対象外）。');
+      throw Error('位相輸送には、光軸の傾きと二つの屈折率の差が必要です（縮退は対象外）。');
     for (const [key, lo, hi] of [
       ['wavelengthNm', 100, 10000],
       ['lengthUnitUm', 0.1, 10000],

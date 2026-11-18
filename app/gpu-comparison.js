@@ -57,7 +57,7 @@
   }
   function detail(stats) {
     const d = stats.gpu || {};
-    if (d.requested !== 'gpu') return '同じ光学モデルと打切り条件による基準計算です。';
+    if (d.requested !== 'gpu') return '同じ光学モデルと打ち切り条件による基準計算です。';
     if (d.fallbackReason && !d.gpuPixels) return d.fallbackReason;
     return (
       (d.fallbackReason ? d.fallbackReason + ' ' : '') +
@@ -89,7 +89,7 @@
           '秒。'
         : '') +
       (stats.evaluations
-        ? '軌道評価：閉形式 ' +
+        ? '軌道評価：閉式解 ' +
           stats.evaluations.closed +
           ' / 求積 ' +
           stats.evaluations.quadrature +
@@ -98,7 +98,7 @@
           '。'
         : '') +
       (d.trajectoryQuadrature !== undefined
-        ? 'GPU採用分の軌道評価：閉形式 ' +
+        ? 'GPU採用分の軌道評価：閉式解 ' +
           d.trajectoryClosed +
           ' / 求積 ' +
           d.trajectoryQuadrature +
@@ -136,7 +136,7 @@
     $('gpuCompareSave').disabled = !report?.complete;
     $('gpuCompareResolution').disabled = active;
     $('gpuCompareHint').textContent = supported.ok
-      ? '現在の材料・形状・偏光モデル・打切り条件を固定して、CPU倍精度とWebGPU単精度（必要な画素はCPUで再計算）を比較します。GPUは初回に準備が必要です。同じページで繰り返すと準備済みの処理を再利用します。'
+      ? '現在の媒質・形状・偏光モデル・打ち切り条件を固定して、CPU倍精度とWebGPU単精度（必要な画素はCPUで再計算）を比較します。GPUは初回に準備が必要です。同じページで繰り返すと準備済みの処理を再利用します。'
       : supported.reason;
     $('gpuCompareStale').hidden =
       !report || JSON.stringify(c) === JSON.stringify(report.sourceConfig);
@@ -382,9 +382,9 @@
         report.difference.linearRgbRMSE.toExponential(3) +
         ' / 最大絶対差 ' +
         max.toExponential(3) +
-        '。実行時間は初期化・転送・CPU再計算を含むWorker内の計算開始後の1回測定です。「準備後の処理」はGPU計算・転送・CPU再計算・結果集計を含みます。形状・材料モデル・内部輸送方式・ソルバーを変えると、シェーダを再コンパイルする場合があります。少ない画素ではCPUの方が速いこともあります。';
+        '。実行時間は初期化・転送・CPU再計算を含むWorker内の計算開始後の1回測定です。「準備後の処理」はGPU計算・転送・CPU再計算・結果集計を含みます。形状・媒質モデル・内部輸送方式・ソルバーを変えると、シェーダを再コンパイルする場合があります。少ない画素ではCPUの方が速いこともあります。';
       $('gpuCompareStatus').textContent = report.mediumGpuActuallyUsed
-        ? '比較完了。打切り量とCPU再計算数も確認してください。'
+        ? '比較完了。打ち切り量とCPU再計算数も確認してください。'
         : report.gpuActuallyUsed
           ? '比較完了。GPU処理は背景のみで、媒質をGPUで処理した画素は0です。CPU再計算数を確認してください。'
           : '比較完了。両方ともCPU計算です。切替理由を確認してください。';
