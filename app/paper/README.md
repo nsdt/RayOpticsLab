@@ -25,3 +25,6 @@ scripts in the analysis archive. Historical labels inside that archive are retai
 In the source repository, detailed instructions are in `docs/REPRODUCING.md` and
 `docs/REPRODUCING_JA.md`. The browser application itself does not require those docs
 or any of the original development workspace paths.
+
+The software and reproduction materials are archived as Ray Optics Lab 1.0.0:
+[10.5281/zenodo.24357692](https://doi.org/10.5281/zenodo.24357692).

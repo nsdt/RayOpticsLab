@@ -1,5 +1,7 @@
 # Ray Optics Lab
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24357692.svg)](https://doi.org/10.5281/zenodo.24357692)
+
 [日本語](README_JA.md) · [Experiment reproduction](docs/REPRODUCING.md) · [Development](docs/DEVELOPING.md)
 
 Ray Optics Lab visualizes images observed through homogeneous and inhomogeneous
@@ -128,4 +130,12 @@ Initial shader preparation and CPU fallback contribute to elapsed time.
 See [spectral data sources](app/data/spectral/SOURCES.md) and
 [third-party notices](app/THIRD_PARTY_NOTICES.md). The original software and associated documentation are distributed under the
 [MIT License](LICENSE). Bundled third-party data retain their own terms.
-The first software release is being archived with Zenodo; its DOI will be listed here.
+Version 1.0.0 is archived on [Zenodo](https://doi.org/10.5281/zenodo.24357692).
+
+## Cite this software
+
+Yohei Nishidate (2026). *Ray Optics Lab* (Version 1.0.0). Zenodo.
+[10.5281/zenodo.24357692](https://doi.org/10.5281/zenodo.24357692).
+
+The version DOI identifies the archived implementation. The [concept DOI](https://doi.org/10.5281/zenodo.24357691)
+identifies all archived versions. The public website may receive later documentation updates.

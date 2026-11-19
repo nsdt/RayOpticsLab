@@ -1,5 +1,7 @@
 # Ray Optics Lab
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24357692.svg)](https://doi.org/10.5281/zenodo.24357692)
+
 [English](README.md) · [論文の実験を再現する手順](docs/REPRODUCING_JA.md) · [開発・保守](docs/DEVELOPING.md)
 
 均一・不均一な等方性／異方性媒質を通して見える像を、ブラウザ上で可視化するアプリです。媒質のパラメータを変え、解析的に表された光線軌道が観察像にどのような変化をもたらすかを調べられます。英語・日本語の表示に対応し、利用できる場合はGPUを優先します。GPUが使えない環境や、GPUの精度判定を通らない画素にはCPUを使用します。
@@ -90,4 +92,11 @@ npm run build
 
 幾何光学に基づく計算です。閉式解の条件を満たす区間ではその解を使い、それ以外では数値計算や明記された偏光の近似を使います。GPUでは初回のシェーダ準備やCPU補完にも時間がかかるため、常に高速になるわけではありません。
 
-[分散データの出典](app/data/spectral/SOURCES.md)と[第三者データの表記](app/THIRD_PARTY_NOTICES.md)を収録しています。オリジナルのソフトウェアと付随する文書は[MITライセンス](LICENSE)で公開しています。第三者データには、それぞれの利用条件が適用されます。公開版をZenodoに保存し、発行されたソフトウェアDOIをここに記載します。
+[分散データの出典](app/data/spectral/SOURCES.md)と[第三者データの表記](app/THIRD_PARTY_NOTICES.md)を収録しています。オリジナルのソフトウェアと付随する文書は[MITライセンス](LICENSE)で公開しています。第三者データには、それぞれの利用条件が適用されます。バージョン1.0.0を[Zenodo](https://doi.org/10.5281/zenodo.24357692)に保存しています。
+
+## ソフトウェアの引用
+
+Yohei Nishidate (2026). *Ray Optics Lab* (Version 1.0.0). Zenodo.
+[10.5281/zenodo.24357692](https://doi.org/10.5281/zenodo.24357692).
+
+この版固有のDOIは、論文の計算に対応する保存済み実装を指します。[全バージョン共通のDOI](https://doi.org/10.5281/zenodo.24357691)も利用できます。公開ウェブサイトには、以後の文書更新が反映される場合があります。
