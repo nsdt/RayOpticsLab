@@ -3,6 +3,8 @@
  * Message pairs are explicit translations; optical kernels do not depend on this module. */
 (function (root) {
   'use strict';
+  // Earlier versions also saved auto-detected languages. Ignore those legacy values.
+  const languagePreferenceKey = 'ray-optics-language-choice';
   const normalize = (s) => s.replace(/\s+/g, ' ').trim(),
     escape = (s) => s.replace(/[.*+?^$()|[\]\\]/g, '\\$&');
   const exact = new Map(),
@@ -116,12 +118,14 @@
     else for (const child of node.childNodes) clone.appendChild(sourceClone(child));
     return clone;
   }
-  function setLanguage(value) {
+  function setLanguage(value, { remember = true } = {}) {
     language = value === 'ja' ? 'ja' : 'en';
     document.documentElement.lang = language;
-    try {
-      localStorage.setItem('ray-optics-language', language);
-    } catch {}
+    if (remember) {
+      try {
+        localStorage.setItem(languagePreferenceKey, language);
+      } catch {}
+    }
     const select = document.getElementById('interfaceLanguage');
     if (select) select.value = language;
     root.ContextHelp?.closeHelp();
@@ -133,7 +137,7 @@
     initialized = true;
     // Start in English unless the user has already selected a language.
     try {
-      const saved = localStorage.getItem('ray-optics-language');
+      const saved = localStorage.getItem(languagePreferenceKey);
       language = saved === 'ja' ? 'ja' : 'en';
     } catch {
       language = 'en';
@@ -149,7 +153,7 @@
       .addEventListener('change', (e) => setLanguage(e.target.value));
     const originalAlert = root.alert.bind(root);
     root.alert = (message) => originalAlert(translate(String(message)));
-    setLanguage(language);
+    setLanguage(language, { remember: false });
   }
   root.I18n = {
     init,
