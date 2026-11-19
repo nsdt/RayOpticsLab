@@ -4,8 +4,8 @@
 
 ## Choose the appropriate calculation
 
-Start the app with `python launch.py` from the repository root and open
-**Paper experiments**. This workspace has its own settings and canvas. It
+Open [Ray Optics Lab](https://nsdt.github.io/RayOpticsLab/#paper) and select
+**Paper experiments**, or use the [local launch instructions](../README.md#run-locally). This workspace has its own settings and canvas. It
 does not overwrite the scene in Custom rendering.
 
 The catalog has 80 conditions (76 monochromatic and 4 spectral). Experiment
@@ -64,8 +64,6 @@ after rendering, it no longer describes the displayed image. The interface shows
 this distinction; the completed-image record retains the previous recipe.
 
 If source verification fails, reload the application from one consistent copy.
-For a local checkout modified by a developer, run the documented validation and
-runtime-hash update workflow. Do not edit the archived engine or bypass its hashes.
 Opening files with `file://` does not provide the required worker and secure-context
 features. Use localhost or an HTTPS host.
 
@@ -99,8 +97,3 @@ older count in an archived README, defines the 80 selectable image conditions.
 changes relative to current defaults. `app/paper/engine/` contains the retained
 CPU source. `app/paper/provenance.json` records the engine, protocol, maintained
 GPU runtime and additional-analysis hashes. The worker verifies them before use.
-
-CPU regression fixtures sample five camera positions per condition across all
-80 cases. They check reproduction of retained values; they do not independently
-validate every pixel or every physical approximation. The frozen experiment inputs
-and source should remain intact when the surrounding application is maintained.

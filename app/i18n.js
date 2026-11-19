@@ -131,16 +131,12 @@
   function init() {
     if (initialized) return;
     initialized = true;
+    // Start in English unless the user has already selected a language.
     try {
       const saved = localStorage.getItem('ray-optics-language');
-      language =
-        saved === 'ja' || saved === 'en'
-          ? saved
-          : navigator.language?.startsWith('ja')
-            ? 'ja'
-            : 'en';
+      language = saved === 'ja' ? 'ja' : 'en';
     } catch {
-      language = navigator.language?.startsWith('ja') ? 'ja' : 'en';
+      language = 'en';
     }
     observer = new MutationObserver(() => {
       if (!scheduled) {

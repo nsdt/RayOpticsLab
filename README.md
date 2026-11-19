@@ -2,7 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24357692.svg)](https://doi.org/10.5281/zenodo.24357692)
 
-[日本語](README_JA.md) · [Experiment reproduction](docs/REPRODUCING.md) · [Development](docs/DEVELOPING.md)
+[日本語のREADME](README_JA.md)
 
 Ray Optics Lab visualizes images observed through homogeneous and inhomogeneous
 isotropic and anisotropic optical media. Change material parameters in the browser
@@ -10,51 +10,19 @@ to examine how analytical ray trajectories affect the observed image. The interf
 supports English and Japanese. WebGPU is preferred when supported, with CPU
 calculation available for unsupported environments and rejected pixels.
 
-**[Open Ray Optics Lab](https://nsdt.github.io/RayOpticsLab/)** ·
-[Source code](https://github.com/nsdt/RayOpticsLab) ·
-[Releases and downloads](https://github.com/nsdt/RayOpticsLab/releases)
+## Use in your browser
 
-The hosted application runs in the browser without installation. For offline use,
-follow the local launch instructions below.
+**[Open Ray Optics Lab](https://nsdt.github.io/RayOpticsLab/)** — no installation is required.
 
-## Run locally
-
-You need a current browser and **Python 3.9 or later**. No Python packages, Node.js,
-npm installation or internet connection are required to run the downloaded app.
-Keep the `app/` folder and the launchers together.
-
-1. Download and extract the repository ZIP, or extract `RayOpticsLab-local.zip`.
-2. Start the launcher for your platform:
-
-   | Platform | Start command |
-   | --- | --- |
-   | Windows | Double-click `start-windows.bat`, or run `py -3 launch.py` |
-   | macOS | Run `sh start-macos.command` in Terminal |
-   | Linux | Run `sh start-linux.sh` in a terminal |
-
-3. Open the URL printed by the launcher if a browser does not open automatically.
-4. Leave the terminal running. Press **Ctrl+C** there to stop the server.
-
-Alternatively, run `python launch.py` or `python3 launch.py` in this directory.
-`--port 8876` selects a starting port and `--no-browser` suppresses automatic browser
-opening. The server listens only on the local computer.
-
-Open the app through the launcher rather than double-clicking `index.html`.
-Workers and verified experiment files require HTTP on localhost or HTTPS. The
-[GitHub Pages application](https://nsdt.github.io/RayOpticsLab/) runs directly in the
-browser without Python or installation.
-
-## First image
-
-1. Use **Language / 言語** in the header to select English or Japanese.
+1. The app opens in English on your first visit. Use **Language / 言語** in the header
+   to switch to Japanese. Your selection is saved for future visits.
 2. In **Custom rendering**, choose a material and adjust its parameters.
 3. Choose a resolution, then calculate the image. GPU preference can be changed
    in the calculation controls. The result reports the backend actually used.
 4. Save the image or scene settings if needed.
 
-Changing language does not alter optical parameters or rendered pixels. The
-comparison workspaces contain development examples. Use **Paper experiments**
-for the paper's retained conditions.
+Changing language does not alter optical parameters or rendered pixels. Use
+**Paper experiments** to explore the conditions used in the paper.
 
 ## Reproduce a manuscript image
 
@@ -87,38 +55,33 @@ per side. Spectral examples permit 8–256 wavelength samples; the manuscript us
 See the [step-by-step reproduction guide](docs/REPRODUCING.md) for reference figures,
 restoring settings, spectral examples and regenerating trajectory/analysis plots.
 
-## Repository contents
+## Run locally
 
-| Path | Contents | Needed to run the app? |
-| --- | --- | --- |
-| `app/` | Browser application, shaders, data, archived paper engine, conditions and reference figures | Yes |
-| `launch.py`, `start-*` | Local HTTP launchers | For local use |
-| `tests/` | Maintained CPU/browser regressions and fixtures | No |
-| `scripts/`, `distribution/` | Validation, explicit distribution file list and packaging tools | No |
-| `docs/` | Reproduction, development and release instructions | Documentation |
-| `.github/workflows/` | CI and the manual Pages deployment workflow | GitHub only |
+You need a current browser and **Python 3.9 or later**. No Python packages, Node.js,
+npm installation or internet connection are required to run the downloaded app.
+Keep the `app/` folder and the launchers together.
 
-`dev/`, `test-results/`, `dist/`, local review folders and `node_modules/` are ignored
-by Git. Historical development archives and scratch images are not distributed.
-The optional analysis download inside `app/paper/` is retained so the paper's
-additional calculations remain available offline.
+1. Download `RayOpticsLab-local.zip` from the [releases page](https://github.com/nsdt/RayOpticsLab/releases),
+   or download the repository ZIP using **Code → Download ZIP**, then extract it.
+2. Start the launcher for your platform:
 
-## Development and deployment
+   | Platform | Start command |
+   | --- | --- |
+   | Windows | Double-click `start-windows.bat`, or run `py -3 launch.py` |
+   | macOS | Run `sh start-macos.command` in Terminal |
+   | Linux | Run `sh start-linux.sh` in a terminal |
 
-With Node.js 22 or later:
+3. Open the URL printed by the launcher if a browser does not open automatically.
+4. Leave the terminal running. Press **Ctrl+C** there to stop the server.
 
-```sh
-npm ci
-npm test
-npm run build
-```
+Alternatively, run `python launch.py` or `python3 launch.py` in this directory.
+`--port 8876` selects a starting port and `--no-browser` suppresses automatic browser
+opening. The server listens only on the local computer.
 
-`dist/site/` contains only the files selected for static hosting. No scientific
-code is bundled or rewritten. `python scripts/package-local.py` packages that
-verified build with the launchers into `dist/RayOpticsLab-local.zip`.
-
-See [DEVELOPING.md](docs/DEVELOPING.md) for browser checks and
-[RELEASING.md](docs/RELEASING.md) for Pages deployment and Zenodo archiving. Running the build does not publish anything.
+Open the app through the launcher rather than double-clicking `index.html`.
+Workers and verified experiment files require HTTP on localhost or HTTPS. The
+[GitHub Pages application](https://nsdt.github.io/RayOpticsLab/) runs directly in the
+browser without Python or installation.
 
 ## Scope and attribution
 
@@ -138,4 +101,4 @@ Yohei Nishidate (2026). *Ray Optics Lab* (Version 1.0.0). Zenodo.
 [10.5281/zenodo.24357692](https://doi.org/10.5281/zenodo.24357692).
 
 The version DOI identifies the archived implementation. The [concept DOI](https://doi.org/10.5281/zenodo.24357691)
-identifies all archived versions. The public website may receive later documentation updates.
+identifies all archived versions. The public website may receive later updates.

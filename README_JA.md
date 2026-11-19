@@ -2,41 +2,20 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24357692.svg)](https://doi.org/10.5281/zenodo.24357692)
 
-[English](README.md) · [論文の実験を再現する手順](docs/REPRODUCING_JA.md) · [開発・保守](docs/DEVELOPING.md)
+[English README](README.md)
 
 均一・不均一な等方性／異方性媒質を通して見える像を、ブラウザ上で可視化するアプリです。媒質のパラメータを変え、解析的に表された光線軌道が観察像にどのような変化をもたらすかを調べられます。英語・日本語の表示に対応し、利用できる場合はGPUを優先します。GPUが使えない環境や、GPUの精度判定を通らない画素にはCPUを使用します。
 
-**[ブラウザでRay Optics Labを開く](https://nsdt.github.io/RayOpticsLab/)** ·
-[ソースコード](https://github.com/nsdt/RayOpticsLab) ·
-[リリース・ダウンロード](https://github.com/nsdt/RayOpticsLab/releases)
+## ブラウザで使う
 
-公開URLから、インストールなしで利用できます。オフラインで利用する場合は、以下の起動方法を参照してください。
+**[Ray Optics Labを開く](https://nsdt.github.io/RayOpticsLab/)** — インストールは不要です。
 
-## 起動方法
+1. 初回は英語で開きます。日本語にするには、画面上部の **Language / 言語** で日本語を選びます。選択した言語は次回以降も保持されます。
+2. **「条件を指定して描画」** の画面で、媒質とパラメータを選びます。
+3. 解像度を設定し、画像を計算します。GPU／CPUの設定は計算用の操作欄で変更できます。結果には実際に使用した計算装置が表示されます。
+4. 必要に応じて画像や設定を保存します。
 
-必要なものは、ブラウザと **Python 3.9以降**です。アプリを起動するためのPythonパッケージ、Node.js、npmのインストールは不要です。ファイルを取得した後の計算には、インターネット接続も必要ありません。
-
-1. リポジトリのZIP、または配布用の `RayOpticsLab-local.zip` を展開します。
-2. `app/` と起動ファイルを同じフォルダ内に置いたまま、次の方法で起動します。
-
-   | OS | 起動方法 |
-   | --- | --- |
-   | Windows | `start-windows.bat` をダブルクリック。端末からは `py -3 launch.py` |
-   | macOS | ターミナルで `sh start-macos.command` |
-   | Linux | 端末で `sh start-linux.sh` |
-
-3. ブラウザが自動で開かなければ、端末に表示されたURLを開きます。
-4. 使用中は端末を開いたままにします。終了するときは端末で **Ctrl+C** を押します。
-
-`python launch.py` または `python3 launch.py` でも起動できます。例えば `python launch.py --port 8876 --no-browser` は、8876番ポートから使用可能なポートを探してサーバーだけを起動します。サーバーは自分のコンピュータからのみ接続できます。
-
-`index.html` を直接開くと、計算用Workerや実験条件の読み込みが制限されます。起動スクリプトを使用してください。GitHub Pages版は公開URLをブラウザで開くだけで利用でき、Pythonも不要です。
-
-## 自由な条件で描画する
-
-画面上部の **Language / 言語** で表示言語を選びます。自由描画の画面で媒質やパラメータ、解像度を設定し、画像を計算します。計算結果には、実際に使用したGPU／CPUと補完の状況が表示されます。画像と設定は保存できます。
-
-言語を切り替えても、光学条件や計算済み画像は変わりません。比較用のタブには開発・検証用の例も含まれるため、論文の条件を使うときは論文実験のタブを選んでください。
+言語を切り替えても、光学条件や計算済み画像は変わりません。論文の条件を使うときは **「論文の数値実験」** のタブを選んでください。
 
 ## 論文の画像を再現する
 
@@ -61,32 +40,25 @@ GPUとCPU基準計算は演算精度が異なるため、同じ物理条件で�
 
 参照図の表示、元の設定への復帰、光線軌道図や検証図の再生成は、[再現手順の詳細](docs/REPRODUCING_JA.md)にまとめています。
 
-## ファイル構成
+## ローカルで使う
 
-| パス | 内容 | アプリ実行時 |
-| --- | --- | --- |
-| `app/` | アプリ、GPUシェーダ、データ、論文再現用エンジン・条件・参照図 | 必要 |
-| `launch.py`, `start-*` | ローカル起動用スクリプト | ローカル利用時に使用 |
-| `tests/` | CPU・ブラウザの回帰テストと基準データ | 不要 |
-| `scripts/`, `distribution/` | 検証・配布ファイルの選択・パッケージ生成 | 不要 |
-| `docs/` | 再現・保守・公開手順 | 説明資料 |
-| `.github/workflows/` | 自動検証とPages公開用設定 | GitHub用 |
+必要なものは、ブラウザと **Python 3.9以降**です。アプリを起動するためのPythonパッケージ、Node.js、npmのインストールは不要です。ファイルを取得した後の計算には、インターネット接続も必要ありません。
 
-過去の検証データや作業画像はローカルの `dev/` に保持し、Gitの対象から除外しています。`test-results/`、`dist/`、`node_modules/` も登録しません。一方、論文の追加解析をオフラインでも再現できるように、`app/paper/analysis-reproduction.zip` は配布対象に含めています。
+1. [リリースページ](https://github.com/nsdt/RayOpticsLab/releases)の `RayOpticsLab-local.zip`、または **Code → Download ZIP** からリポジトリのZIPをダウンロードし、展開します。
+2. `app/` と起動ファイルを同じフォルダ内に置いたまま、次の方法で起動します。
 
-## 開発とGitHub Pagesへの公開
+   | OS | 起動方法 |
+   | --- | --- |
+   | Windows | `start-windows.bat` をダブルクリック。端末からは `py -3 launch.py` |
+   | macOS | ターミナルで `sh start-macos.command` |
+   | Linux | 端末で `sh start-linux.sh` |
 
-Node.js 22以降で、リポジトリのフォルダから次を実行します。
+3. ブラウザが自動で開かなければ、端末に表示されたURLを開きます。
+4. 使用中は端末を開いたままにします。終了するときは端末で **Ctrl+C** を押します。
 
-```sh
-npm ci
-npm test
-npm run build
-```
+`python launch.py` または `python3 launch.py` でも起動できます。例えば `python launch.py --port 8876 --no-browser` は、8876番ポートから使用可能なポートを探してサーバーだけを起動します。サーバーは自分のコンピュータからのみ接続できます。
 
-`dist/site/` に、静的サイトとして配布するファイルだけが生成されます。科学計算のコードを書き換えたり、圧縮・結合したりはしません。続けて `python scripts/package-local.py` を実行すると、起動スクリプト付きの `dist/RayOpticsLab-local.zip` を作成できます。
-
-ビルドしただけでは公開されません。[開発ガイド](docs/DEVELOPING.md)と[公開手順](docs/RELEASING.md)も参照してください。
+`index.html` を直接開くと、計算用Workerや実験条件の読み込みが制限されます。起動スクリプトを使用してください。GitHub Pages版は公開URLをブラウザで開くだけで利用でき、Pythonも不要です。
 
 ## 計算の範囲と出典
 
@@ -99,4 +71,4 @@ npm run build
 Yohei Nishidate (2026). *Ray Optics Lab* (Version 1.0.0). Zenodo.
 [10.5281/zenodo.24357692](https://doi.org/10.5281/zenodo.24357692).
 
-この版固有のDOIは、論文の計算に対応する保存済み実装を指します。[全バージョン共通のDOI](https://doi.org/10.5281/zenodo.24357691)も利用できます。公開ウェブサイトには、以後の文書更新が反映される場合があります。
+この版固有のDOIは、論文の計算に対応する保存済み実装を指します。[全バージョン共通のDOI](https://doi.org/10.5281/zenodo.24357691)も利用できます。公開ウェブサイトには、以後の更新が反映される場合があります。

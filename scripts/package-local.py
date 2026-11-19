@@ -20,7 +20,7 @@ with zipfile.ZipFile(output, 'w', compression=zipfile.ZIP_DEFLATED, compressleve
         archive.write(SITE / name, 'RayOpticsLab/app/' + name)
     for name in ['launch.py', 'start-windows.bat', 'start-linux.sh', 'start-macos.command',
                  'README.md', 'README_JA.md', 'docs/REPRODUCING.md', 'docs/REPRODUCING_JA.md',
-                 'docs/SPECTRAL.md', 'docs/DEVELOPING.md', 'docs/RELEASING.md', 'CITATION.cff', 'LICENSE']:
+                 'docs/SPECTRAL.md', 'CITATION.cff', 'LICENSE']:
         archive.write(ROOT / name, 'RayOpticsLab/' + name)
 print(output)
 print(f'{output.stat().st_size:,} bytes; no tests, development archives or npm dependencies')
