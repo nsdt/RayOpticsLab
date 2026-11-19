@@ -3,6 +3,7 @@
   "description": "Explicit files served by the application. Paths are relative to app/.",
   "files": [
     ".nojekyll",
+    "LICENSE",
     "THIRD_PARTY_NOTICES.md",
     "analytical.js",
     "app.css",

@@ -5,8 +5,16 @@ message: "If you use Ray Optics Lab, please cite the archived software release."
 authors:
   - family-names: Nishidate
     given-names: Yohei
+    affiliation: "The University of Aizu"
 abstract: "Browser-based visualization of images observed through homogeneous and inhomogeneous isotropic and anisotropic optical media."
 repository-code: "https://github.com/nsdt/RayOpticsLab"
 url: "https://nsdt.github.io/RayOpticsLab/"
 version: "1.0.0"
 date-released: "2026-11-19"
+license: MIT
+keywords:
+  - ray tracing
+  - geometrical optics
+  - anisotropic media
+  - gradient-index optics
+  - WebGPU

@@ -57,8 +57,9 @@ No DOI, GitHub release or public page is created by these commands.
 
 ## Archive a software release
 
-1. Retain the source license and third-party data notices. Update CITATION.cff and
-   .zenodo.json with the version, publication date and release description.
+1. Retain the source license and third-party data notices. Update CITATION.cff with the version, publication date, MIT license and release description.
+   Zenodo reads this citation metadata. Do not add duplicate .zenodo.json metadata
+   unless fields unsupported by CITATION.cff are required.
 2. Run the validation commands above. Review the files in the local ZIP and the
    GitHub diff before creating a release.
 3. In Zenodo, connect the GitHub account, synchronize repositories and enable

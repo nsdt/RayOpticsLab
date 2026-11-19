@@ -126,6 +126,6 @@ approximations are also used. GPU availability does not guarantee faster renderi
 Initial shader preparation and CPU fallback contribute to elapsed time.
 
 See [spectral data sources](app/data/spectral/SOURCES.md) and
-[third-party notices](app/THIRD_PARTY_NOTICES.md). The application release license
-and software DOI will be finalized before public release. No theoretical-paper DOI
-is used as a substitute for the software DOI.
+[third-party notices](app/THIRD_PARTY_NOTICES.md). The original software and associated documentation are distributed under the
+[MIT License](LICENSE). Bundled third-party data retain their own terms.
+The first software release is being archived with Zenodo; its DOI will be listed here.

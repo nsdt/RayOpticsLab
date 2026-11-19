@@ -12,6 +12,6 @@ manufacturer dispersion coefficients are bundled for offline numerical use.
   [data/spectral/SOURCES.md](data/spectral/SOURCES.md).
 - The same numerical tables are preserved in `paper/engine/data/spectral/`.
 
-These data notices do not assign a license to the application source or the
-manuscript figures. The software release license and DOI remain to be finalized
-before public release.
+The original application source and associated documentation are distributed
+under the [MIT License](LICENSE). Third-party datasets retain their respective
+terms above and are not relicensed under MIT.
