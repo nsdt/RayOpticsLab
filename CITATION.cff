@@ -1,9 +1,12 @@
 cff-version: 1.2.0
 type: software
 title: Ray Optics Lab
-message: "This software release is being prepared. A software DOI will be added after archival; do not substitute a theoretical-paper DOI."
+message: "If you use Ray Optics Lab, please cite the archived software release."
 authors:
   - family-names: Nishidate
     given-names: Yohei
 abstract: "Browser-based visualization of images observed through homogeneous and inhomogeneous isotropic and anisotropic optical media."
 repository-code: "https://github.com/nsdt/RayOpticsLab"
+url: "https://nsdt.github.io/RayOpticsLab/"
+version: "1.0.0"
+date-released: "2026-11-19"

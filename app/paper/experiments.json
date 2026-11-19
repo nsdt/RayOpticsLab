@@ -2,8 +2,8 @@
   "version": 8,
   "protocol": "manuscript-20261116-coupling",
   "imageProtocol": "manuscript-20260928",
-  "manuscriptSHA256": "f0a70cc7a52d575fd30cee3637ec4d32548f93c167d0c1d1dca3b8f8dd2c265c",
-  "supplementSHA256": "e47b7882eda932d18ae20fa680e5d32937d164225efa034eabac98a025ee34cd",
+  "manuscriptSHA256": "bc1048fe0e826877702bf97ef241e63da35eeb453077654abe420fc893e2ed99",
+  "supplementSHA256": "bf944c7ffc76eb166c27122489ab57313d43e2a3c4afd18a0017c8ff1d38eede",
   "source": "experiments_20260928_isotropic_columns",
   "groups": [
     {
@@ -5554,145 +5554,145 @@
       "number": "S2",
       "document": "supplement",
       "file": "paper/figures/atlas-iso-uniform.png",
-      "sha256": "f0b3e044d483c7619292e1e0e78363754973a3c07631cfc74dc20c5d5d775058"
+      "sha256": "7377b0e6542424acae55ac1cedd36c191de948cb1e9f86bbaad6c4bd4ea0d5bc"
     },
     {
       "number": "S3",
       "document": "supplement",
       "file": "paper/figures/atlas-uniaxial-uniform.png",
-      "sha256": "b76afec19b599cc3fe822276b2b9bc37eff644b7b7e6e2ab40f35388a6f9dbbc"
+      "sha256": "5cd668f773934e5dd58e4d7cc69a46f000c65c2a8e2f721a161853cdea5411f4"
     },
     {
       "number": "S4",
       "document": "supplement",
       "file": "paper/figures/atlas-iso-axial.png",
-      "sha256": "bf7ed25018b8eeea22d2f1b7db40cbdb62ec92a668fa3d2e8e9a8bd90194704c"
+      "sha256": "d223d87eb85d7d1973ceb7057c693a33020a2a6319154b800d40dc4910d69f19"
     },
     {
       "number": "S5",
       "document": "supplement",
       "file": "paper/figures/atlas-iso-cylindrical.png",
-      "sha256": "7d4cc7eb284abe43d0d51e12bb83750327ecda28cfc45048a049c5afa416a76a"
+      "sha256": "cfde90462e10249b2761107d813e7cadd5544c6a20f6ee60f2a42df30401721d"
     },
     {
       "number": "S6",
       "document": "supplement",
       "file": "paper/figures/atlas-iso-spherical.png",
-      "sha256": "fed6712b78e25cd1acc3544badeea794e7763e2351a6f58e8cf9db60c564bdf8"
+      "sha256": "1da23930ad163a7b97c13d2b51def9769de4b195aff2c42338e06b4e50c90910"
     },
     {
       "number": "S7",
       "document": "supplement",
       "file": "paper/figures/atlas-axial-2013.png",
-      "sha256": "fe1b90cffcf49aa8df29c6bef3dfc0c4f52ef5ecad5294d1a1b77e412a4b6067"
+      "sha256": "48b3f8a47637172e326be1deb7cc90c09f0d82d4dcc93fa42d4b2550b98a1b7b"
     },
     {
       "number": "S8",
       "document": "supplement",
       "file": "paper/figures/atlas-reciprocal.png",
-      "sha256": "16f18d95c4b38b663e6c15eed629c78b36cf1877632fa7b570e9b54d66a1ccc6"
+      "sha256": "b5b7d2883101d8275cabbff25522af98f24642bec144947edb7e12d6c5200c6f"
     },
     {
       "number": "S9",
       "document": "supplement",
       "file": "paper/figures/atlas-quadratic.png",
-      "sha256": "6c3e11d2be1fd0c05f0d8f5749521ffa0bb2f5d5f80cf52412c56e58c6034b57"
+      "sha256": "04db8ef8de8028c75479f59b75ba13174f8a6ebf64b218122706717e088d7d20"
     },
     {
       "number": "S10",
       "document": "supplement",
       "file": "paper/figures/atlas-heliconical.png",
-      "sha256": "37790e025efe4b935846e7c7b6c3e90db7fe2dc4dd3d2d94893026224d96780e"
+      "sha256": "e2550ae02607a81b320c6371591ef4f58716d6c8f91e93872be814109c2f3dcf"
     },
     {
       "number": "S11",
       "document": "supplement",
       "file": "paper/figures/atlas-radial-axis.png",
-      "sha256": "95804919aa9c159533ec54f0a5d1f78fb6ca9bd2447b577d985c83f745261558"
+      "sha256": "bfdd8b971fcf95afc80b5f797f72bf3104f0daa430c27b864a7c9badb0653fa9"
     },
     {
       "number": "S12",
       "document": "supplement",
       "file": "paper/figures/atlas-shear.png",
-      "sha256": "5b5177aa443eac9bed33d489a3b689efaadc700b306affd94e726f4dfee7c6fd"
+      "sha256": "b01b3e771231a03edc78acc5818178b4799e532c59e9856cda205226bbc5dd24"
     },
     {
       "number": "S13",
       "document": "supplement",
       "file": "paper/figures/atlas-spherical-map.png",
-      "sha256": "18e47596eb293ee5f0dba364411cc62a0db3378f71a110d59e881dd4025f0959"
+      "sha256": "f66a5fd2baf5c8e26697a41033f0d98ca50ad195b70e365f4c5bdb4084054784"
     },
     {
       "number": "S14",
       "document": "supplement",
       "file": "paper/figures/atlas-cylindrical-map.png",
-      "sha256": "ef1ee7e0fa087720764816215046ece9567e8b9fecdef92829b81c30ee6b8779"
+      "sha256": "16e5240bd7a2255d2324145d642963af50e295288719c9025679915e063f7a71"
     },
     {
       "number": "S15",
       "document": "supplement",
       "file": "paper/figures/atlas-hyperbolic.png",
-      "sha256": "b02bf0334d6430a282d43e2727f844df16471d75be1b640f9e6d0a343f001a1f"
+      "sha256": "01244bd0f56315409d71e4766e102611c2057de180081f9ddffc70267aa91970"
     },
     {
       "number": "S16",
       "document": "supplement",
       "file": "paper/figures/atlas-eng-2013.png",
-      "sha256": "187c9a84ed1dd0cb6e8c43c02d29bc00b7dbbc7863070a2ca15645b7576435c7"
+      "sha256": "f988e1118f561102b889685c1e174fbf341f6bcc5a05796e07ff58c72425d556"
     },
     {
       "number": "S17",
       "document": "supplement",
       "file": "paper/figures/fig06-landmark-rays.png",
-      "sha256": "73277d9e318f7db56862d03c3e77766bc6fb80091a5c91dc173ad466e86d47e5"
+      "sha256": "aeac7d4a84d4da120d6bf420925296ab80baeb62e83f6351a8e13477d956f88a"
     },
     {
       "number": "S18",
       "document": "supplement",
       "file": "paper/figures/atlas-iso-uniform-dispersion-constant.png",
-      "sha256": "8e3b8c45404b1b57f583881d110110b99fba8a1af5e59555746049dfd614e94e"
+      "sha256": "d99968e78115f645b6d17d903d4bfd33e24eb15c7617f674a527122eef3ce67d"
     },
     {
       "number": "S19",
       "document": "supplement",
       "file": "paper/figures/atlas-iso-uniform-dispersion-spectral.png",
-      "sha256": "d64fc833ac504fccd5376603f34f91c12f57b2878106574444c4c2754e5c1918"
+      "sha256": "8a3109292080417ce78f76746efce01d7c43e1b30bcecaf835b8cd2bdb9b009f"
     },
     {
       "number": "S20",
       "document": "supplement",
       "file": "paper/figures/atlas-reciprocal-dispersion-constant.png",
-      "sha256": "d3474cfa2986e62be5cadc98e93432d882e66cb273830d44ce09f6865bb08cb9"
+      "sha256": "f53b071bdf2aa67d59543137d5d341267af2da01efccada31301d7d08c5b0b5f"
     },
     {
       "number": "S21",
       "document": "supplement",
       "file": "paper/figures/atlas-reciprocal-dispersion-spectral.png",
-      "sha256": "709c37aff9f588aee35460a87f1f5675f04ed8bbc40eb31a855817ac364dccce"
+      "sha256": "6bfd98833135e21b23e42d8dc8a1d4e17ba36697fd9f80a96ba29c2b5584ea6a"
     },
     {
       "number": "S22",
       "document": "supplement",
       "file": "paper/figures/quantitative-landmarks.png",
-      "sha256": "cabeebfdd1a7818e66bde55abe9a4675af243e4206f5a3e023b61b41bab711ee"
+      "sha256": "251a08aa30b536d72ed20c5dd187f531f3163d62a6a787ffbf0495c2ccb50bd6"
     },
     {
       "number": "S23",
       "document": "supplement",
       "file": "paper/figures/physical-heliconical-pi-atlas.png",
-      "sha256": "42d07ac5deab05bcaff12ac622dbed2ac0ca0510353afa71efe8b84470a01473"
+      "sha256": "35ebbc65213205073bdd9e52cfcb704f39b01c0de4a766dddb29e4924e7e2e15"
     },
     {
       "number": "S24",
       "document": "supplement",
       "file": "paper/figures/physical-reflections-full.png",
-      "sha256": "0a3794cc0ffe1a6353ecff2a30ce2d92f0fc0daf6bb7ffcd593130bb14e5c405"
+      "sha256": "598212a6c2793a1587e88488981d86f374bf6f2abc2446f29e1e819b0765446b"
     },
     {
       "number": "S25",
       "document": "supplement",
       "file": "paper/figures/internal-coupling-images.png",
-      "sha256": "3cd46e6a6af276d6037d9a9dcdcf33cbec4ef878487cb3251f77394b8bc6628c"
+      "sha256": "8bdab18cb2bbe4232b657b9da35c7f5f549b835174ceaf6466b77b4c093c5552"
     },
     {
       "number": "S26",

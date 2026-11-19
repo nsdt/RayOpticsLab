@@ -2,13 +2,9 @@
 
 ## Current state
 
-Keep the repository private. The local build and CI checks do not publish a site.
-The Pages workflow has only a manual trigger and runs only when all of the following
-are true: the repository is public, `PAGES_ENABLED` is `true`, and the selected
-branch is the default branch. Leave the variable unset during preparation.
-
-This matters because a Pages site can be public even when its source repository
-is private. See [GitHub's Pages documentation](https://docs.github.com/en/enterprise-cloud@latest/pages/getting-started-with-github-pages/creating-a-github-pages-site).
+The source repository is public at https://github.com/nsdt/RayOpticsLab.
+The hosted application is https://nsdt.github.io/RayOpticsLab/.
+Pages deployment is manual and requires PAGES_ENABLED=true on the default branch.
 
 ## Files to keep in Git
 
@@ -59,27 +55,34 @@ Outputs:
 
 No DOI, GitHub release or public page is created by these commands.
 
-## Before the first public release
+## Archive a software release
 
-Finalize the software license, the author-approved release description, and the
-relationship between this software version and the manuscript. Retain the CIE
-attribution/license and separate manufacturer data notices. Update `CITATION.cff`
-with the actual repository URL and release version. Add a software DOI only after
-it has been reserved or issued for this software release. Do not use the DOI of a
-theoretical paper as the software DOI.
+1. Retain the source license and third-party data notices. Update CITATION.cff and
+   .zenodo.json with the version, publication date and release description.
+2. Run the validation commands above. Review the files in the local ZIP and the
+   GitHub diff before creating a release.
+3. In Zenodo, connect the GitHub account, synchronize repositories and enable
+   nsdt/RayOpticsLab. This must precede the GitHub release.
+4. Create a version tag and GitHub release on the reviewed commit. Attach
+   RayOpticsLab-local.zip for users who prefer a local download.
+5. Wait for Zenodo to archive the GitHub release. Verify the archived version,
+   creator, license and DOI on the record page.
+6. Add the actual version DOI to CITATION.cff, both READMEs and the manuscript.
+   Use a version DOI when citing the implementation used in an experiment.
+   Do not substitute the DOI of a theoretical paper.
 
-When publication is explicitly authorized:
+The GitHub integration archives the tagged repository. The repository therefore
+contains the archived CPU engine, experiment configurations, reference figures
+and the additional-analysis archive required for reproduction. Release assets
+are convenience downloads; the tagged source itself remains runnable.
 
-1. Change repository visibility as intended and remove the preparation-only
-   status text from the README.
-2. In **Settings → Pages**, select **GitHub Actions** as the publishing source.
-3. Add repository variable **PAGES_ENABLED = true**.
-4. Run **Publish GitHub Pages** manually on the default branch.
-5. Check the generated HTTPS URL, including a paper calculation and its downloads.
-6. Put that verified URL in both READMEs. Archive the reviewed software release
-   with Zenodo and record its actual DOI and version in the citation metadata.
+## Deploy GitHub Pages
 
-For a project repository the URL has the form
-`https://<owner>.github.io/<repository>/`. The workflow uploads only `dist/site/`;
-source tests and development records are not web content. Workflow setup follows
-[GitHub's custom Pages workflow guide](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
+In Settings > Pages, choose GitHub Actions as the source. Keep the repository
+variable PAGES_ENABLED=true and run Publish GitHub Pages on the default branch.
+The workflow uploads only dist/site. Verify the HTTPS page, a paper calculation,
+language switching and downloads after deployment.
+
+The browser checks serve the app below /RayOpticsLab/, matching the public URL.
+The workflow follows [GitHub's custom Pages workflow guide](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
+Zenodo setup follows [the repository integration guide](https://help.zenodo.org/docs/github/enable-repository/).

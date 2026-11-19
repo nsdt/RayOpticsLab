@@ -4,7 +4,11 @@
 
 均一・不均一な等方性／異方性媒質を通して見える像を、ブラウザ上で可視化するアプリです。媒質のパラメータを変え、解析的に表された光線軌道が観察像にどのような変化をもたらすかを調べられます。英語・日本語の表示に対応し、利用できる場合はGPUを優先します。GPUが使えない環境や、GPUの精度判定を通らない画素にはCPUを使用します。
 
-**現在は [nsdt/RayOpticsLab](https://github.com/nsdt/RayOpticsLab) を非公開にして公開準備を進めています。** GitHub PagesのデモとZenodoのソフトウェアDOIはまだ公開していません。将来の公開用ワークフローは、非公開リポジトリでは実行されない設定です。
+**[ブラウザでRay Optics Labを開く](https://nsdt.github.io/RayOpticsLab/)** ·
+[ソースコード](https://github.com/nsdt/RayOpticsLab) ·
+[リリース・ダウンロード](https://github.com/nsdt/RayOpticsLab/releases)
+
+公開URLから、インストールなしで利用できます。オフラインで利用する場合は、以下の起動方法を参照してください。
 
 ## 起動方法
 
@@ -24,7 +28,7 @@
 
 `python launch.py` または `python3 launch.py` でも起動できます。例えば `python launch.py --port 8876 --no-browser` は、8876番ポートから使用可能なポートを探してサーバーだけを起動します。サーバーは自分のコンピュータからのみ接続できます。
 
-`index.html` を直接開くと、計算用Workerや実験条件の読み込みが制限されます。起動スクリプトを使用してください。将来のGitHub Pages版では、公開URLをブラウザで開くだけで利用でき、Pythonも不要です。
+`index.html` を直接開くと、計算用Workerや実験条件の読み込みが制限されます。起動スクリプトを使用してください。GitHub Pages版は公開URLをブラウザで開くだけで利用でき、Pythonも不要です。
 
 ## 自由な条件で描画する
 
@@ -64,11 +68,11 @@ GPUとCPU基準計算は演算精度が異なるため、同じ物理条件で�
 | `tests/` | CPU・ブラウザの回帰テストと基準データ | 不要 |
 | `scripts/`, `distribution/` | 検証・配布ファイルの選択・パッケージ生成 | 不要 |
 | `docs/` | 再現・保守・公開手順 | 説明資料 |
-| `.github/workflows/` | 自動検証と将来のPages公開用設定 | GitHub用 |
+| `.github/workflows/` | 自動検証とPages公開用設定 | GitHub用 |
 
 過去の検証データや作業画像はローカルの `dev/` に保持し、Gitの対象から除外しています。`test-results/`、`dist/`、`node_modules/` も登録しません。一方、論文の追加解析をオフラインでも再現できるように、`app/paper/analysis-reproduction.zip` は配布対象に含めています。
 
-## 開発とGitHub Pagesへの準備
+## 開発とGitHub Pagesへの公開
 
 Node.js 22以降で、リポジトリのフォルダから次を実行します。
 

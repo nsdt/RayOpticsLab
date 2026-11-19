@@ -1,5 +1,5 @@
 name: Publish GitHub Pages
-# Preparation only: private repositories and the unset flag both block publishing.
+# Manual deployment requires a public repository, PAGES_ENABLED, and the default branch.
 on:
   workflow_dispatch:
 permissions:

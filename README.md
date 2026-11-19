@@ -8,9 +8,12 @@ to examine how analytical ray trajectories affect the observed image. The interf
 supports English and Japanese. WebGPU is preferred when supported, with CPU
 calculation available for unsupported environments and rejected pixels.
 
-**Release status:** [nsdt/RayOpticsLab](https://github.com/nsdt/RayOpticsLab) is private during release preparation. The hosted demo
-and Zenodo software DOI have not been published. The repository includes a guarded
-GitHub Pages workflow for a later public release.
+**[Open Ray Optics Lab](https://nsdt.github.io/RayOpticsLab/)** ·
+[Source code](https://github.com/nsdt/RayOpticsLab) ·
+[Releases and downloads](https://github.com/nsdt/RayOpticsLab/releases)
+
+The hosted application runs in the browser without installation. For offline use,
+follow the local launch instructions below.
 
 ## Run locally
 
@@ -35,9 +38,9 @@ Alternatively, run `python launch.py` or `python3 launch.py` in this directory.
 opening. The server listens only on the local computer.
 
 Open the app through the launcher rather than double-clicking `index.html`.
-Workers and verified experiment files require HTTP on localhost or HTTPS. When
-the GitHub Pages demo is released, it will run directly in the browser without
-Python or installation.
+Workers and verified experiment files require HTTP on localhost or HTTPS. The
+[GitHub Pages application](https://nsdt.github.io/RayOpticsLab/) runs directly in the
+browser without Python or installation.
 
 ## First image
 
@@ -91,14 +94,14 @@ restoring settings, spectral examples and regenerating trajectory/analysis plots
 | `tests/` | Maintained CPU/browser regressions and fixtures | No |
 | `scripts/`, `distribution/` | Validation, explicit distribution file list and packaging tools | No |
 | `docs/` | Reproduction, development and release instructions | Documentation |
-| `.github/workflows/` | CI and the guarded manual Pages workflow | GitHub only |
+| `.github/workflows/` | CI and the manual Pages deployment workflow | GitHub only |
 
 `dev/`, `test-results/`, `dist/`, local review folders and `node_modules/` are ignored
 by Git. Historical development archives and scratch images are not distributed.
 The optional analysis download inside `app/paper/` is retained so the paper's
 additional calculations remain available offline.
 
-## Development and future hosting
+## Development and deployment
 
 With Node.js 22 or later:
 
@@ -113,8 +116,7 @@ code is bundled or rewritten. `python scripts/package-local.py` packages that
 verified build with the launchers into `dist/RayOpticsLab-local.zip`.
 
 See [DEVELOPING.md](docs/DEVELOPING.md) for browser checks and
-[RELEASING.md](docs/RELEASING.md) for private-repository preparation, future Pages
-activation and Zenodo metadata. Running the build does not publish anything.
+[RELEASING.md](docs/RELEASING.md) for Pages deployment and Zenodo archiving. Running the build does not publish anything.
 
 ## Scope and attribution
 
